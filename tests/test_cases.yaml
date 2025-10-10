@@ -1,0 +1,81 @@
+# Canonical QA cases for EV search (CAD, km, kW)
+- name: AWD SUV under 60k 5 seats
+  query: "awd suv under 60000 5 seats"
+  ui:
+    drivetrain: "awd4"
+    is_suv: true
+  expect:
+    parsed:
+      is_suv: true
+      max_price: 60000
+      seats: 5
+
+- name: Price with k suffix
+  query: "suv under 45k"
+  ui: {}
+  expect:
+    parsed:
+      is_suv: true
+      max_price: 45000
+
+- name: Range in miles -> km
+  query: "over 200 mi range"
+  ui: {}
+  expect:
+    parsed:
+      min_range: 322
+
+- name: Seats parsing
+  query: "7 seats crossover"
+  ui: {}
+  expect:
+    parsed:
+      is_suv: true
+      seats: 7
+
+- name: Drivetrain explicit FWD
+  query: "hatchback under 40k"
+  ui:
+    drivetrain: "fwd"
+  expect:
+    parsed:
+      max_price: 40000
+    ui:
+      drivetrain: "fwd"
+
+- name: Fast charge threshold
+  query: "fast charge 150 kW suv"
+  ui: {}
+  expect:
+    parsed:
+      is_suv: true
+      min_fast_kw: 150
+
+- name: Brand/model bias Ioniq
+  query: "ioniq"
+  ui: {}
+  expect:
+    smoke_brand_any_of: ["Hyundai"]
+
+- name: Brand/model bias Audi Q4
+  query: "audi q4"
+  ui: {}
+  expect:
+    smoke_brand_any_of: ["Audi"]
+
+- name: Sort price per km asc stable
+  query: "suv"
+  ui:
+    sort: "price_per_km_asc"
+  expect:
+    stable_order: true
+
+- name: AWD-only vs Any cache correctness
+  query: "under 60k"
+  ui:
+    drivetrain: "awd4"
+  expect:
+    parsed:
+      max_price: 60000
+    ui:
+      drivetrain: "awd4"

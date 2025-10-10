@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" class="font-sans" data-theme="{{ request.cookies.get('theme','light') }}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>{% block title %}EVison Advisor{% endblock %}</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚡</text></svg>">
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+  </noscript>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/lucide@0.263.1/dist/lucide.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/core/variables.css">
+  <link rel="stylesheet" href="/static/css/core/global.css">
+  <link rel="stylesheet" href="/static/css/components/components.css">
+  <link rel="stylesheet" href="/static/css/header.css">
+
+  <style>
+    body {
+      font-family: "Inter", system-ui, -apple-system, "Poppins", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .skip-link,
+    .skip-to-content {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .skip-link:focus,
+    .skip-to-content:focus {
+      position: fixed;
+      left: 1rem;
+      top: 1rem;
+      width: auto;
+      height: auto;
+      padding: .5rem .75rem;
+      background: var(--surface, #fff);
+      color: var(--text, #111);
+      border: 1px solid var(--border, #e5e7eb);
+      border-radius: .5rem;
+      z-index: 10000;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .12);
+    }
+
+    .nav-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.25rem;
+      height: 1.25rem;
+      padding: 0 .25rem;
+      font-size: .75rem;
+      line-height: 1;
+      border-radius: 999px;
+      background: var(--primary-500, #2563eb);
+      color: #fff;
+      margin-left: .375rem;
+    }
+
+    .site-footer {
+      border-top: 1px solid var(--border, #e5e7eb);
+      background: var(--section-bg, transparent);
+    }
+
+    .site-footer .footer-container {
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 1.25rem 1rem;
+      color: var(--muted, #6b7280);
+      font-size: .875rem;
+      text-align: center;
+    }
+
+    .nav-icon,
+    .theme-icon-light,
+    .theme-icon-dark {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  </style>
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %} antialiased" style="background:var(--bg); color:var(--text);">
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <div id="vanta-bg-global" aria-hidden="true"></div>
+
+  {% include 'includes/header.html' %}
+
+  <main id="main">{% block content %}{% endblock %}</main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p>&copy; For Ehrl Balquin's Portfolio</p>
+    </div>
+  </footer>
+
+  <script src="/static/js/lazy-loader.js"></script>
+
+  <script>
+    (function () {
+      const forceAnimations = localStorage.getItem('forceAnimations') === 'true';
+      const urlParams = new URLSearchParams(window.location.search);
+      const animParam = urlParams.get('animations');
+      if (forceAnimations || animParam === 'on') {
+        document.body.setAttribute('data-force-animations', 'true');
+      }
+    })();
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const container = document.getElementById('vanta-bg-global');
+        if (container && typeof LazyLoader !== 'undefined') {
+          container.style.display = 'block';
+          LazyLoader.loadVanta();
+        }
+      }, 100);
+    });
+
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const html = document.documentElement;
+        const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+        html.dataset.theme = next;
+        document.cookie = `theme=${next};path=/;max-age=31536000`;
+
+        const icon = themeBtn.querySelector('i');
+        if (icon) {
+          icon.classList.toggle('fa-sun');
+          icon.classList.toggle('fa-moon');
+        }
+        if (typeof LazyLoader !== 'undefined') {
+          LazyLoader.updateVantaTheme();
+        }
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const tag = document.activeElement?.tagName || '';
+      const typing = /INPUT|TEXTAREA|SELECT/.test(tag);
+      if (e.key === '/' && !typing) {
+        e.preventDefault();
+        const searchInput = document.getElementById('search_query');
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+      } else if (e.key === 'Escape') {
+        const searchInput = document.getElementById('search_query');
+        if (searchInput) {
+          searchInput.value = '';
+        }
+      }
+    });
+  </script>
+
+  <div id="loadingOverlay" role="dialog" aria-modal="true" aria-label="Loading">
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+    });
+  </script>
+
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+    </symbol>
+    <symbol id="icon-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="7" height="7"></rect>
+      <rect x="14" y="3" width="7" height="7"></rect>
+      <rect x="14" y="14" width="7" height="7"></rect>
+      <rect x="3" y="14" width="7" height="7"></rect>
+    </symbol>
+    <symbol id="icon-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path
+        d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z">
+      </path>
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </symbol>
+    <symbol id="icon-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+    </symbol>
+    <symbol id="icon-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </symbol>
+  </svg>
+
+  <!-- Load saved.js FIRST - it defines window.EVisonClearFavs -->
+  <script src="/static/js/saved.js" defer></script>
+  
+  <!-- Then load page-specific scripts that depend on saved.js -->
+  {% block extra_js %}{% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}EVision – Electric Vehicle Search Engine{% endblock %}
+{% block body_class %}homepage{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/home.css">
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+  <div class="hero-content">
+    <h1 class="hero-tagline">
+      <span class="hero-tagline-primary">Electric vehicles,</span>
+      <span class="hero-tagline-secondary">simplified.</span>
+    </h1>
+
+    <div class="hero-stats">
+      <span class="stat-item">
+        <strong id="vehicleCount" data-target="400">400</strong> vehicles
+      </span>
+      <span class="stat-separator">•</span>
+      <span class="stat-item">
+        <strong id="brandCount" data-target="40">40</strong> brands
+      </span>
+      <span class="stat-separator">•</span>
+      <span class="stat-item">Updated <strong>today</strong></span>
+    </div>
+
+    <form class="search-form" action="/search" method="get">
+      <input type="hidden" name="page" value="1">
+      
+      <div class="search-field">
+        <input 
+          id="search_query" 
+          name="search_query" 
+          type="search" 
+          class="search-input"
+          placeholder="Try &quot;under 40k&quot; or &quot;300+ mile range&quot;"
+          autocomplete="off"
+        >
+        <button type="submit" class="search-submit">
+          <span>Search</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+
+    <nav class="search-suggestions">
+      <span class="suggestion-label">Popular:</span>
+      <a href="/search?max_price=50000" class="suggestion-chip">Under $50k</a>
+      <a href="/search?sort=price_asc" class="suggestion-chip">Cheapest</a>
+      <a href="/search?seats=7" class="suggestion-chip">Family size</a>
+    </nav>
+
+    <div class="hero-secondary">
+      <a href="/search" class="browse-link">
+        Or browse all vehicles
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/home.js" defer></script>
+{% endblock %}

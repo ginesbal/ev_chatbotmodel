@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+jinja2
+pydantic
+pydantic-settings
+python-multipart
+sentence-transformers
+numpy
+cachetools>=5.3
+itsdangerous>=2.2.0

@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block title %}Browse All EVs – EVison{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/browse.css">
+{% endblock %}
+
+{% block content %}
+<section class="browse-hero">
+    <div class="browse-hero-content">
+        <h1 class="browse-title">
+            Browse <span class="browse-title-accent">All EVs</span>
+        </h1>
+        <p class="browse-subtitle">Explore our complete collection of electric vehicles</p>
+    </div>
+</section>
+
+<section class="browse-container">
+    <div class="browse-wrapper">
+
+        {# Keep filters directly in normal flow; no extra wrapper #}
+        {% include 'includes/filters.html' %}
+
+        <nav aria-label="Breadcrumb" class="browse-breadcrumb">
+            <ol class="breadcrumb-list">
+                <li><a href="/" class="breadcrumb-link">Home</a></li>
+                <li class="breadcrumb-separator">/</li>
+                <li aria-current="page" class="breadcrumb-current">Browse</li>
+            </ol>
+        </nav>
+
+        <!-- Tabs -->
+        <div class="browse-tabs-bar">
+            <div class="browse-tabs" role="tablist" aria-label="Result view">
+                <button id="tabAll" type="button" role="tab" aria-selected="true" class="tab-button tab-active">
+                    All
+                </button>
+                <button id="tabSaved" type="button" role="tab" aria-selected="false" class="tab-button">
+                    Saved <span id="savedCount" class="tab-badge">0</span>
+                </button>
+            </div>
+
+            <div class="browse-count">
+                <span class="count-text">
+                    Showing <span id="visibleCount" class="count-number">{{ ev_data|length }}</span> of
+                    <span id="totalCount" class="count-number">{{ ev_data|length }}</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div id="results-grid" class="browse-grid">
+            {# Use the same partial as /saved/fragment so SSR matches client swaps #}
+            {% if ev_data and ev_data|length > 0 %}
+            {% for ev in ev_data %}
+            {% include 'includes/card.html' %}
+            {% endfor %}
+            {% else %}
+            <div class="browse-empty">
+                <i class="fas fa-car-side browse-empty-icon"></i>
+                <p class="browse-empty-text">No vehicles to display</p>
+                <p class="browse-empty-hint">Try adjusting your filters or search criteria</p>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+
+<script>
+    (function () {
+        const grid = document.getElementById('results-grid');
+        const tabAll = document.getElementById('tabAll');
+        const tabSav = document.getElementById('tabSaved');
+        const visEl = document.getElementById('visibleCount');
+        const totEl = document.getElementById('totalCount');
+        const log = (...a) => console.info('[saved-tab]', ...a);
+
+        if (!grid || !tabAll || !tabSav) return;
+
+        let originalHTML = grid.innerHTML;
+
+        function selectTab(saved) {
+            tabAll.setAttribute('aria-selected', String(!saved));
+            tabSav.setAttribute('aria-selected', String(saved));
+
+            if (saved) {
+                tabAll.classList.remove('tab-active');
+                tabSav.classList.add('tab-active');
+            } else {
+                tabSav.classList.remove('tab-active');
+                tabAll.classList.add('tab-active');
+            }
+        }
+
+        let inflight;
+        async function showSaved() {
+            selectTab(true);
+            try {
+                if (inflight) inflight.abort();
+                inflight = new AbortController();
+                const res = await fetch('/saved/fragment', {
+                    headers: { 'X-Requested-With': 'fetch' },
+                    signal: inflight.signal
+                });
+                const html = await res.text();
+                grid.innerHTML = html;
+
+                if (window.EVisonInitFavButtons) window.EVisonInitFavButtons(grid);
+
+                const cards = grid.querySelectorAll('.card,[data-fav-key]');
+                const n = cards.length;
+                if (visEl) visEl.textContent = String(n);
+                if (totEl) totEl.textContent = String(n);
+                log('rendered saved cards', { count: n });
+            } catch (err) {
+                if (err && err.name === 'AbortError') return;
+                console.error('[saved-tab] failed to load fragment', err);
+            } finally {
+                inflight = null;
+            }
+        }
+
+        function showAll() {
+            selectTab(false);
+            grid.innerHTML = originalHTML;
+            if (window.EVisonInitFavButtons) window.EVisonInitFavButtons(grid);
+
+            const cards = grid.querySelectorAll('.card,[data-fav-key]');
+            const n = cards.length;
+            if (visEl) visEl.textContent = String(n);
+            if (totEl) totEl.textContent = String(n);
+            log('restored all cards', { count: n });
+        }
+
+        tabAll.addEventListener('click', showAll);
+        tabSav.addEventListener('click', showSaved);
+
+        document.addEventListener('evision:favsChanged', (e) => {
+            if (tabSav.getAttribute('aria-selected') === 'true') {
+                log('favorites changed while in Saved', e.detail || {});
+                showSaved();
+            }
+        });
+
+        grid.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-fav-btn]');
+            if (!btn) return;
+            if (tabSav.getAttribute('aria-selected') === 'true') {
+                setTimeout(showSaved, 0);
+            }
+        });
+    })();
+</script>
+{% endblock %}

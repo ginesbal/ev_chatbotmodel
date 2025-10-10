@@ -1,0 +1,7 @@
+{% if records and records|length > 0 %}
+{% for ev in records %}
+{% include "includes/card.html" %}
+{% endfor %}
+{% else %}
+<p class="col-span-full text-center text-muted py-20">No saved vehicles yet</p>
+{% endif %}

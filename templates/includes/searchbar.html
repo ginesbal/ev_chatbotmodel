@@ -1,0 +1,62 @@
+{# templates/includes/searchbar.html #}
+<form
+  id="search-form"
+  action="/search"
+  method="get"
+  role="search"
+  class="search-component"
+  autocomplete="off"
+  aria-busy="false"
+>
+  <!-- Always reset pagination on new query -->
+  <input type="hidden" name="page" value="1" />
+
+  <div class="search-field">
+    <label for="search_query" class="sr-only">Search electric vehicles</label>
+    <input
+      id="search_query"
+      name="search_query"
+      type="search"
+      placeholder="Tesla Model 3 alternative"
+      class="search-input"
+      aria-label="Search electric vehicles"
+      aria-describedby="search-feedback"
+      autocapitalize="off"
+      autocorrect="off"
+      spellcheck="false"
+      enterkeyhint="search"
+      data-lpignore="true"
+    />
+
+    <div class="search-actions">
+      <button
+        type="button"
+        id="search-clear"
+        class="search-clear"
+        aria-label="Clear search"
+        hidden
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false">
+          <path d="M12 4L4 12M4 4l8 8"/>
+        </svg>
+      </button>
+
+      <button
+        type="submit"
+        class="search-submit"
+        aria-label="Search"
+      >
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <div
+    id="search-feedback"
+    class="search-feedback"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    hidden
+  ></div>
+</form>

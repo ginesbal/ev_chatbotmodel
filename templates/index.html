@@ -1,0 +1,532 @@
+{% extends 'base.html' %}
+{% block title -%}
+{%- if search_query -%}{{ search_query }} · {%- endif -%}
+Search Results — EVision{%- if page and total_pages %} (Page {{ page }} of {{ total_pages }}){%- endif -%}
+{%- endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/search_results.css?v=5">
+<style>
+  /* Clean tabs design */
+  .results-tabs-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border, #e5e7eb);
+  }
+
+  .results-tabs {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .results-tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--muted, #6b7280);
+    background: transparent;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .results-tab:hover {
+    color: var(--text, #111);
+    background: var(--surface-hover, #f3f4f6);
+  }
+
+  .results-tab-active {
+    color: var(--secondary-500);
+    background: var(--primary-50, #eff6ff);
+  }
+
+  .results-tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.375rem;
+    height: 1.375rem;
+    padding: 0 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    border-radius: 999px;
+    background: var(--primary-500, #2563eb);
+    color: #fff;
+    transition: all 0.2s ease;
+  }
+
+  .results-tab-badge-inactive {
+    background: var(--muted-bg, #e5e7eb);
+    color: var(--muted, #6b7280);
+  }
+
+  .results-summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: var(--muted, #6b7280);
+  }
+
+  .results-summary-text {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .results-summary-number {
+    font-weight: 600;
+    color: var(--text, #111);
+  }
+
+  .results-summary-page {
+    padding: 0.25rem 0.625rem;
+    background: var(--surface, #f9fafb);
+    border-radius: 0.375rem;
+    font-weight: 500;
+    color: var(--text-secondary, #374151);
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .results-tabs-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .results-summary {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .results-tab {
+      font-size: 0.875rem;
+      padding: 0.5rem 0.875rem;
+    }
+  }
+
+  /* Loading state */
+  #results-loading {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    border-radius: 0.5rem;
+  }
+
+  [data-theme="dark"] #results-loading {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .loading-spinner {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 4px solid var(--primary-200, #bfdbfe);
+    border-top-color: var(--primary-600, #2563eb);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{# page url builder #}
+{% macro page_url(p) -%}
+{% set qs = namespace(items=[]) %}
+{% for key, val in request.query_params.multi_items() if key != 'page' %}
+{% set _ = qs.items.append(key ~ '=' ~ (val|urlencode)) %}
+{% endfor %}
+{% set _ = qs.items.append('page=' ~ p) %}
+/search?{{ qs.items|join('&') }}
+{%- endmacro %}
+
+{# pagination variables #}
+{% set _per_page = page_size if page_size is defined else 24 %}
+{% set _total = total_results if total_results is defined else ev_data|length %}
+{% set _show_pagination = total_pages > 1 %}
+
+{# display range calculation #}
+{% set _start = ((_per_page * (page|int - 1)) + 1) %}
+{% set _end = _start + (ev_data|length) - 1 %}
+
+<section class="search-results-hero">
+  <div class="search-results-hero-content">
+    <h1 class="search-results-title">
+      Search <span class="search-results-title-accent">Results</span>
+    </h1>
+
+    <div class="search-results-searchbar">
+      {% include 'includes/searchbar.html' %}
+    </div>
+
+    <!-- quick filters -->
+    <nav class="search-results-quick-filters" aria-label="Quick filters">
+      <a href="/search?search_query=SUV%20under%2050000&is_suv=true&max_price=50000&page=1" class="quick-filter-chip">
+        <i class="fas fa-dollar-sign"></i> Under $50k
+      </a>
+      <a href="/search?sort=price_asc&page=1" class="quick-filter-chip">
+        <i class="fas fa-arrow-up"></i> Cheapest
+      </a>
+      <a href="/search?search_query=family%20SUV&is_suv=true&seats=7&page=1" class="quick-filter-chip">
+        <i class="fas fa-users"></i> Family size
+      </a>
+      <a href="/search?sort=range_desc&page=1" class="quick-filter-chip">
+        <i class="fas fa-road"></i> Best range
+      </a>
+    </nav>
+  </div>
+</section>
+
+<!-- results section -->
+<section class="bg-section section-tight">
+  <div class="max-w-6xl mx-auto px-6">
+
+    {% include 'includes/filters.html' %}
+
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <a href="/" class="breadcrumb-link">Home</a>
+      <span class="breadcrumb-separator">/</span>
+      <span class="breadcrumb-current">Search Results</span>
+    </nav>
+
+    <!-- tabs and stats -->
+    <div class="results-tabs-bar">
+      <div class="results-tabs" role="tablist" aria-label="Result view">
+        <button id="tabAll" type="button" role="tab" aria-selected="true" aria-controls="results-grid"
+          class="results-tab results-tab-active">
+          All
+          <span class="results-tab-badge" id="tabAllCount">
+            {{ total_results or ev_data|length }}
+          </span>
+        </button>
+        <button id="tabSaved" type="button" role="tab" aria-selected="false" aria-controls="results-grid"
+          class="results-tab">
+          Saved
+          <span class="results-tab-badge results-tab-badge-inactive" id="tabSavedCount">0</span>
+        </button>
+      </div>
+
+      <div class="results-summary" aria-live="polite" aria-atomic="true">
+        <span class="results-summary-text">
+          Showing <span class="results-summary-number" id="visibleCount">{{ _start }}</span>–<span
+            class="results-summary-number" id="visibleEnd">{{ _end }}</span>
+          of <span class="results-summary-number" id="totalCount">{{ _total }}</span>
+        </span>
+        {% if _show_pagination %}
+        <span class="results-summary-page">Page {{ page }} of {{ total_pages }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+
+    <!-- results grid -->
+    <div id="results-grid" class="results-grid" style="position: relative;" aria-live="polite">
+      <div id="results-loading">
+        <div class="loading-spinner"></div>
+      </div>
+
+      {% if ev_data and ev_data|length > 0 %}
+      {% for ev in ev_data %}
+      {% include 'includes/card.html' %}
+      {% endfor %}
+      {% else %}
+      <div class="results-empty">
+        <i class="fas fa-search results-empty-icon"></i>
+        <h3 class="results-empty-title">No matching vehicles found</h3>
+        <p class="results-empty-text">Try adjusting your filters to widen your search criteria or explore different
+          options.</p>
+        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+          <a href="/search" class="btn btn-secondary">Clear filters</a>
+          <a href="/top-picks" class="btn btn-primary">View top picks</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if _show_pagination %}
+    <nav aria-label="Pagination">
+      <div class="pagination">
+        {# pagination controls #}
+        {% if page > 1 %}
+        <a href="{{ page_url(1) }}" class="pagination-link" rel="first" aria-label="First page">‹‹</a>
+        <a href="{{ page_url(page - 1) }}" class="pagination-link" rel="prev" aria-label="Previous page">‹ Prev</a>
+        {% else %}
+        <span class="pagination-link pagination-disabled" aria-disabled="true">‹‹</span>
+        <span class="pagination-link pagination-disabled" aria-disabled="true">‹ Prev</span>
+        {% endif %}
+
+        {# numbered pages #}
+        {% set window = 1 %}
+        {% for p_num in range(1, total_pages + 1) %}
+        {% if p_num == 1 or p_num == total_pages or (p_num >= page - window and p_num <= page + window) %} {% if
+          p_num==page %} <span class="pagination-link pagination-active" aria-current="page">{{ p_num }}</span>
+          {% else %}
+          <a href="{{ page_url(p_num) }}" class="pagination-link">{{ p_num }}</a>
+          {% endif %}
+          {% elif p_num == page - window - 1 or p_num == page + window + 1 %}
+          <span class="pagination-ellipsis">…</span>
+          {% endif %}
+          {% endfor %}
+
+          {# next/last controls #}
+          {% if page < total_pages %} <a href="{{ page_url(page + 1) }}" class="pagination-link" rel="next"
+            aria-label="Next page">Next ›</a>
+            <a href="{{ page_url(total_pages) }}" class="pagination-link" rel="last" aria-label="Last page">››</a>
+            {% else %}
+            <span class="pagination-link pagination-disabled" aria-disabled="true">Next ›</span>
+            <span class="pagination-link pagination-disabled" aria-disabled="true">››</span>
+            {% endif %}
+      </div>
+    </nav>
+    {% endif %}
+
+  </div>
+</section>
+
+<!-- tab switching functionality -->
+<script>
+  (function () {
+    const grid = document.getElementById('results-grid');
+    const tabAll = document.getElementById('tabAll');
+    const tabSav = document.getElementById('tabSaved');
+    const visEl = document.getElementById('visibleCount');
+    const visEndEl = document.getElementById('visibleEnd');
+    const totEl = document.getElementById('totalCount');
+    const loading = document.getElementById('results-loading');
+    const tabAllCount = document.getElementById('tabAllCount');
+    const tabSavedCount = document.getElementById('tabSavedCount');
+    const summaryPage = document.querySelector('.results-summary-page');
+
+    const log = (...a) => console.info('[saved-tab]', ...a);
+
+    if (!grid || !tabAll || !tabSav) return;
+
+    let originalHTML = grid.innerHTML;
+    const originalTotal = totEl ? parseInt(totEl.textContent) : 0;
+    const originalVisibleStart = visEl ? visEl.textContent : '1';
+    const originalVisibleEnd = visEndEl ? visEndEl.textContent : '0';
+
+    const showLoading = () => {
+      if (loading) loading.style.display = 'flex';
+      grid.setAttribute('aria-busy', 'true');
+    };
+
+    const hideLoading = () => {
+      if (loading) loading.style.display = 'none';
+      grid.setAttribute('aria-busy', 'false');
+    };
+
+    function selectTab(saved) {
+      tabAll.setAttribute('aria-selected', String(!saved));
+      tabSav.setAttribute('aria-selected', String(saved));
+
+      if (saved) {
+        tabAll.classList.remove('results-tab-active');
+        tabSav.classList.add('results-tab-active');
+        tabAllCount.classList.add('results-tab-badge-inactive');
+        tabSavedCount.classList.remove('results-tab-badge-inactive');
+      } else {
+        tabSav.classList.remove('results-tab-active');
+        tabAll.classList.add('results-tab-active');
+        tabSavedCount.classList.add('results-tab-badge-inactive');
+        tabAllCount.classList.remove('results-tab-badge-inactive');
+      }
+    }
+
+    function updateStats(count, isSaved = false) {
+      if (isSaved) {
+        // saved tab: show "1–N" format where N is the count
+        if (visEl) {
+          visEl.textContent = count > 0 ? '1' : '0';
+        }
+        if (visEndEl) {
+          visEndEl.textContent = String(count);
+        }
+      } else {
+        // all tab: restore original values
+        if (visEl) {
+          visEl.textContent = originalVisibleStart;
+        }
+        if (visEndEl) {
+          visEndEl.textContent = originalVisibleEnd;
+        }
+      }
+
+      if (totEl) {
+        totEl.textContent = String(count);
+      }
+      if (summaryPage) {
+        summaryPage.style.display = isSaved ? 'none' : '';
+      }
+    }
+
+    let inflight;
+    async function showSaved() {
+      selectTab(true);
+      showLoading();
+
+      try {
+        inflight?.abort();
+        inflight = new AbortController();
+
+        const res = await fetch('/saved/fragment', {
+          headers: {
+            'X-Requested-With': 'fetch',
+            'Accept': 'text/html'
+          },
+          signal: inflight.signal
+        });
+
+        if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+
+        const html = await res.text();
+        grid.innerHTML = html || `
+          <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
+            <svg class="w-16 h-16 text-muted mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <p class="text-xl font-medium mb-2">No saved vehicles</p>
+            <p class="text-muted max-w-md mb-6">Click the heart icon on any vehicle to save it to your list.</p>
+          </div>`;
+
+        window.EVisonInitFavButtons?.(grid);
+
+        const n = grid.querySelectorAll('.card,[data-fav-key]').length;
+        updateStats(n, true);
+
+        if (tabSavedCount) {
+          tabSavedCount.textContent = String(n);
+        }
+
+        log('rendered saved cards', { count: n });
+
+      } catch (err) {
+        if (err?.name === 'AbortError') return;
+
+        console.error('[saved-tab] failed to load fragment', err);
+        grid.innerHTML = `
+          <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
+            <svg class="w-16 h-16 text-muted mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            <p class="text-xl font-medium mb-2">Failed to load saved vehicles</p>
+            <p class="text-muted max-w-md mb-6">There was a problem loading your saved vehicles. Please try again.</p>
+            <button class="btn btn-primary" onclick="document.getElementById('tabSaved').click()">Retry</button>
+          </div>`;
+      } finally {
+        inflight = null;
+        hideLoading();
+      }
+    }
+
+    function showAll() {
+      selectTab(false);
+      showLoading();
+
+      setTimeout(() => {
+        grid.innerHTML = originalHTML;
+        window.EVisonInitFavButtons?.(grid);
+
+        const n = grid.querySelectorAll('.card,[data-fav-key]').length;
+
+        // restore original stats
+        if (visEl) {
+          visEl.textContent = originalVisibleStart;
+        }
+        if (visEndEl) {
+          visEndEl.textContent = originalVisibleEnd;
+        }
+        if (totEl) {
+          totEl.textContent = String(originalTotal);
+        }
+        if (tabAllCount) {
+          tabAllCount.textContent = String(originalTotal);
+        }
+        if (summaryPage) {
+          summaryPage.style.display = '';
+        }
+
+        hideLoading();
+        log('restored all cards', { count: n });
+      }, 100);
+    }
+
+    function handleTabKeydown(e) {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        const isRight = e.key === 'ArrowRight';
+        const current = tabAll.getAttribute('aria-selected') === 'true' ? tabAll : tabSav;
+        const next = current === tabAll ? (isRight ? tabSav : tabAll) : (isRight ? tabAll : tabSav);
+        next.focus();
+        next.click();
+      }
+    }
+
+    // event listeners
+    tabAll.addEventListener('click', showAll);
+    tabSav.addEventListener('click', showSaved);
+    tabAll.addEventListener('keydown', handleTabKeydown);
+    tabSav.addEventListener('keydown', handleTabKeydown);
+
+    // update saved count when favorites change
+    document.addEventListener('evision:favsChanged', (e) => {
+      const count = e.detail?.size ?? 0;
+
+      if (tabSavedCount) {
+        tabSavedCount.textContent = String(count);
+      }
+
+      // refresh saved tab if currently active
+      if (tabSav.getAttribute('aria-selected') === 'true') {
+        showSaved();
+      }
+    });
+
+    // handle unsave clicks in saved tab
+    grid.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-fav-btn]');
+      if (!btn) return;
+
+      if (tabSav.getAttribute('aria-selected') === 'true') {
+        const card = btn.closest('.card');
+        if (card) {
+          card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.95)';
+        }
+        setTimeout(showSaved, 300);
+      }
+    });
+
+    // initialize saved count on page load
+    const initCount = JSON.parse(localStorage.getItem('evison_favorites') || '[]').length;
+    if (tabSavedCount) {
+      tabSavedCount.textContent = String(initCount);
+    }
+  })();
+</script>
+{% endblock %}

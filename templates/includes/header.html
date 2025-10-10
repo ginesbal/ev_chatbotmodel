@@ -1,0 +1,39 @@
+<header class="header-bar site-header sticky top-0 z-30">
+  <div class="header-inner max-w-6xl mx-auto h-20 px-4 sm:px-6 flex items-center justify-between">
+    <!-- brand logo -->
+    <a href="/" class="brand flex items-center gap-2" aria-label="EVison home">
+      <div class="logo-circle flex items-center justify-center" aria-hidden="true">
+        <div class="header-title font-logo flex items-baseline select-none">
+          <span class="logo-text">eV</span><span class="logo-accent">ision</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- navigation menu -->
+    <nav class="nav flex items-center gap-1 sm:gap-2">
+      <!-- browse link -->
+      <a href="/browse" class="nav-link flex items-center gap-1.5" data-route="/browse">
+        <svg class="nav-icon" width="20" height="20" aria-hidden="true">
+          <use href="#icon-grid"></use>
+        </svg>
+        <span>Browse</span>
+      </a>
+
+      <!-- saved vehicles link -->
+      <a href="/saved" class="nav-link nav-saved relative flex items-center gap-1.5" id="savedLink"
+        aria-label="Open saved vehicles" data-route="/saved">
+        <svg class="nav-icon" width="20" height="20" aria-hidden="true">
+          <use href="#icon-heart"></use>
+        </svg>
+        <span>Saved</span>
+        <span id="savedCountBubble"
+          class="count-chip nav-badge ml-1 {{ 'inline-flex' if saved_count is defined and saved_count > 0 else 'hidden' }}"
+          role="status" aria-live="polite" aria-atomic="true" title="Saved count">
+          {% if saved_count is defined and saved_count > 0 %}{{ saved_count }}{% endif %}
+        </span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="accent-bar" aria-hidden="true"></div>
+</header>

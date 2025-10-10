@@ -1,0 +1,12 @@
+{# templates/includes/cards_fragment.html #}
+{% if ev_data and ev_data|length > 0 %}
+{% for ev in ev_data %}
+{% include 'includes/card.html' %}
+{% endfor %}
+{% else %}
+<p class="col-span-full text-center text-muted py-12">
+    No saved vehicles yet. Go back to
+    <a href="/search" class="text-primary underline">Search</a>
+    and tap ♥ to add some.
+</p>
+{% endif %}

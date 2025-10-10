@@ -1,0 +1,101 @@
+{# ev vehicle card component #}
+{% set progress = 0 if ev.score < 0 else (100 if ev.score> 100 else ev.score) %}
+  {% set model_name = ev.model.split('(')[0].strip() if ev.model else '—' %}
+  {% set range_left = ev.min_range or '—' %}
+  {% set range_right = ev.range_km or '—' %}
+  {% set fast_kw = (ev.fastChargingSpeed ~ ' kW') if ev.fastChargingSpeed else 'N/A' %}
+  {% set drive_disp = ev.driveType or ev.atvType or '—' %}
+  {% set seats_disp = ev.seats or '—' %}
+  {% set img_alt = (ev.brand ~ ' ' ~ model_name ~ ' image') if ev.brand else (model_name ~ ' image') %}
+  {% set vpk = (ev.price_cad / ev.range_km) if (ev.price_cad and ev.range_km and ev.range_km > 0) else None %}
+  {% set price_disp = ('$' ~ '{:,.0f}'.format(ev.price_cad)) if ev.price_cad else '—' %}
+  {% set powertrain = ev.atvType or (ev.driveType and 'EV') or None %}
+  {% set has_incent = (ev.taxCreditAmount is not none and ev.taxCreditAmount != '' and ev.taxCreditAmount|float(0) > 0)
+  %}
+  {% set fav_key = (ev.brand ~ '|' ~ model_name)|lower %}
+
+  <div class="card vehicle-card fade-in relative" data-fav-key="{{ fav_key }}" data-fav-id="{{ ev.permanentId }}">
+    <!-- progress indicator -->
+    <div class="progress-track h-1 relative">
+      <div class="progress-bar-fill h-full" data-width="{{ progress }}%" role="progressbar" aria-label="Match score"
+        aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progress }}"></div>
+      <span class="absolute -top-4 left-0 text-xs text-muted">{{ range_left }} km</span>
+      <span class="absolute -top-4 right-0 text-xs text-muted">{{ range_right }} km</span>
+    </div>
+
+    <!-- vehicle image and controls -->
+    <div class="card-image duotone h-44 flex items-center justify-center media-surface">
+      <img src="{{ ev.image_url }}" alt="{{ img_alt }}" loading="lazy"
+        class="w-full h-full object-contain p-4 media-img"
+        onerror="this.onerror=null; this.src='/static/images/placeholder_car.png';" />
+
+      {% if has_incent %}
+      <span class="incentive-badge">$ {{ '{:,.0f}'.format(ev.taxCreditAmount|float(0)) }} incentive</span>
+      {% endif %}
+
+      {% if ev.permanentId %}
+      <!-- save button -->
+      <button type="button" class="heart-btn heart-btn--abs glass-btn" data-fav-btn data-key="{{ ev.permanentId }}"
+        aria-label="Save this vehicle" aria-pressed="false" title="Save to shortlist">
+        <svg class="heart-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path class="heart-outline"
+            d="M12.1 21s-7.1-4.3-9.3-8.3C1.3 10.1 2.3 7 5.3 6c1.9-.7 3.9.2 4.8 1.8.9-1.6 2.9-2.5 4.8-1.8 3 1 4 4.1 2.5 6.7-2.2 4-9.3 8.3-9.3 8.3Z"
+            stroke="currentColor" stroke-width="1.5" />
+          <path class="heart-fill"
+            d="M12.1 21s-7.1-4.3-9.3-8.3C1.3 10.1 2.3 7 5.3 6c1.9-.7 3.9.2 4.8 1.8.9-1.6 2.9-2.5 4.8-1.8 3 1 4 4.1 2.5 6.7-2.2 4-9.3 8.3-9.3 8.3Z" />
+        </svg>
+      </button>
+      {% else %}
+      <span class="heart-spacer-abs" aria-hidden="true"></span>
+      {% endif %}
+    </div>
+
+    <!-- vehicle details -->
+    <div class="flex flex-col flex-1 p-4">
+      <div class="mb-2">
+        <div class="relative">
+          <h3 class="text-base font-semibold truncate pr-8 min-w-0">{{ model_name }}</h3>
+        </div>
+
+        <p class="text-sm text-muted brand-label">{{ ev.brand }}</p>
+
+        <div class="mt-1 flex items-center gap-2 flex-wrap">
+          <span class="text-sm text-muted" title="Approximate total price (CAD)">{{ price_disp }} CAD</span>
+          {% if powertrain %}<span class="badge" title="Powertrain">{{ powertrain }}</span>{% endif %}
+          {% if has_incent %}<span class="badge" title="Estimated incentive available">Incentive</span>{% endif %}
+        </div>
+      </div>
+
+      <!-- specifications -->
+      <div class="spec-row" aria-label="Specifications">
+        <span class="spec-item"><i class="fas fa-user-friends" aria-hidden="true"></i>{{ seats_disp }}</span>
+        <span class="spec-item"><i class="fas fa-charging-station" aria-hidden="true"></i>{{ fast_kw }}</span>
+        <span class="spec-item"><i class="fas fa-car-side" aria-hidden="true"></i>{{ drive_disp }}</span>
+      </div>
+
+      <!-- value metric -->
+      <div class="value-metric" title="Price per kilometer (CAD)">
+        {% if vpk is not none %}
+        <span class="metric-label">$/km</span>
+        <span class="metric-value">${{ '{:,.0f}'.format(vpk) }}</span>
+        {% else %}
+        <span class="metric-label">$/km</span>
+        <span class="metric-value">—</span>
+        {% endif %}
+      </div>
+
+      <i class="fas fa-info-circle absolute bottom-61 right-6 text-muted text-xs"
+        title="Year: {{ ev.year or '—' }}&#10;Clearance: {{ ev.clearance or '—' }} in&#10;Tax Credit: {{ ev.taxCreditAmount or 'N/A' }}"
+        aria-hidden="true"></i>
+
+      <!-- configure button -->
+      <a href="{{ ev.build_link if ev.build_link else '#' }}" target="_blank" rel="noopener noreferrer"
+        class="btn-build build-link mt-auto" aria-label="Build {{ ev.brand }} {{ model_name }}">
+        <span>Configure</span>
+        <svg class="ml-2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          aria-hidden="true">
+          <path d="M7 17L17 7M17 7H7M17 7V17" />
+        </svg>
+      </a>
+    </div>
+  </div>

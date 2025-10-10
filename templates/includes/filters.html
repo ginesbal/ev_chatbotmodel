@@ -1,0 +1,95 @@
+﻿<form id="filter-form" action="/search" method="get" class="mb-4" role="search" aria-label="EV filters">
+  <!-- reset pagination on submit -->
+  <input type="hidden" name="page" value="1">
+  <!-- preserve current text query -->
+  <input type="hidden" name="search_query" value="{{ request.query_params.get('search_query','') }}">
+
+  <div class="filter-wrap sticky">
+    <fieldset class="filter-row" role="toolbar" aria-label="Filters">
+      <legend class="sr-only">Filters</legend>
+
+      <!-- suv filter -->
+      <label class="filter-item">
+        <i class="fas fa-car-side filter-icon" aria-hidden="true"></i>
+        <span class="filter-label">SUV</span>
+        <input id="is_suv" type="checkbox" name="is_suv" class="filter-check" {% if is_suv %}checked{% endif %} />
+      </label>
+
+      <!-- max price filter -->
+      <label class="filter-item">
+        <i class="fas fa-dollar-sign filter-icon" aria-hidden="true"></i>
+        <span class="filter-label">Price</span>
+        <input id="max_price" type="number" inputmode="numeric" name="max_price" min="20000" max="150000" step="1000"
+          value="{{ max_price or '' }}" class="fctl" placeholder="150,000" aria-label="Max price (CAD)" />
+        <span class="filter-suffix">CAD</span>
+      </label>
+
+      <!-- min range filter -->
+      <label class="filter-item">
+        <i class="fas fa-road filter-icon" aria-hidden="true"></i>
+        <span class="filter-label">Range</span>
+        <input id="min_range" type="number" inputmode="numeric" name="min_range" min="100" max="700" step="10"
+          value="{{ min_range or '' }}" class="fctl" placeholder="100" aria-label="Min range (km)" />
+        <span class="filter-suffix">km</span>
+      </label>
+
+      <!-- seats filter -->
+      <label class="filter-item compact seats-drive">
+        <i class="fas fa-user-friends filter-icon" aria-hidden="true"></i>
+        <span class="filter-label">Seats</span>
+        <select id="seats" name="seats" class="fctl fselect fctl--sm" aria-label="Min seats">
+          <option value="" {% if not seats_chip %}selected{% endif %}>Any</option>
+          {% for n in range(2, 10) %}
+          <option value="{{ n }}" {% if seats_chip and seats_num==n %}selected{% endif %}>{{ n }}+</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <!-- drivetrain filter -->
+      <label class="filter-item compact seats-drive">
+        <i class="fas fa-cog filter-icon" aria-hidden="true"></i>
+        <span class="filter-label">Drive</span>
+        <select id="drivetrain" name="drivetrain" class="fctl fselect fctl--sm" aria-label="Drivetrain">
+          <option value="any" {% if drivetrain=='any' %}selected{% endif %}>Any</option>
+          <option value="awd4" {% if drivetrain=='awd4' %}selected{% endif %}>AWD / 4WD</option>
+          <option value="awd" {% if drivetrain=='awd' %}selected{% endif %}>AWD</option>
+          <option value="4wd" {% if drivetrain=='4wd' %}selected{% endif %}>4WD</option>
+          <option value="fwd" {% if drivetrain=='fwd' %}selected{% endif %}>FWD</option>
+          <option value="rwd" {% if drivetrain=='rwd' %}selected{% endif %}>RWD</option>
+        </select>
+      </label>
+
+      <!-- sort options -->
+      <label class="filter-item compact">
+        <i class="fas fa-sort filter-icon" aria-hidden="true"></i>
+        <span class="filter-label">Sort</span>
+        <select id="sort" name="sort" class="fctl fselect fctl--sm" aria-label="Sort by">
+          <option value="score_desc" {% if sort=='score_desc' %}selected{% endif %}>Best match</option>
+          <option value="price_asc" {% if sort=='price_asc' %}selected{% endif %}>Price ↑ </option>
+          <option value="price_desc" {% if sort=='price_desc' %}selected{% endif %}>Price ↓</option>
+          <option value="range_desc" {% if sort=='range_desc' %}selected{% endif %}>Range ↓</option>
+          <option value="range_asc" {% if sort=='range_asc' %}selected{% endif %}>Range ↑</option>
+          <option value="year_desc" {% if sort=='year_desc' %}selected{% endif %}>Newest</option>
+          <option value="year_asc" {% if sort=='year_asc' %}selected{% endif %}>Oldest</option>
+          <option value="fast_desc" {% if sort=='fast_desc' %}selected{% endif %}>Fast charge ↓</option>
+          <option value="fast_asc" {% if sort=='fast_asc' %}selected{% endif %}>Fast charge ↑</option>
+          <option value="price_per_km_asc" {% if sort=='price_per_km_asc' %}selected{% endif %}>Best $/km ↑</option>
+          <option value="price_per_km_desc" {% if sort=='price_per_km_desc' %}selected{% endif %}>Best $/km ↓</option>
+        </select>
+      </label>
+
+      <!-- filter actions -->
+      <div class="filter-actions">
+        <button type="submit" class="btn btn-primary btn-xs">Apply</button>
+        <a href="/search?search_query={{ request.query_params.get('search_query','') | urlencode }}"
+          class="btn btn-secondary btn-xs">Reset</a>
+      </div>
+    </fieldset>
+  </div>
+
+  {% if is_suv or max_price or min_range or seats_chip or drivetrain!='any' or sort not in [None,'score_desc'] %}
+  {% endif %}
+</form>
+
+<link rel="stylesheet" href="/static/css/filters.css?v=100">
+<script src="/static/js/filters.js" defer></script>
