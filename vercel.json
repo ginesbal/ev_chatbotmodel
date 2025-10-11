@@ -1,17 +1,10 @@
 {
-    "version": 2,
     "functions": {
         "api/index.py": {
-            "runtime": "vercel-python@3.12",
-            "includeFiles": "{app,templates,static}/**",
+            "runtime": "python3.12",
+            "memory": 1024,
             "maxDuration": 10,
-            "memory": 1024
+            "includeFiles": "app/**"
         }
-    },
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "api/index.py"
-        }
-    ]
+    }
 }
