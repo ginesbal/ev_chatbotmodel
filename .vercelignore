@@ -1,16 +1,35 @@
-# Python cruft
-__pycache__/
-*.pyc
-*.pyo
+# virtualenvs & caches
 .venv/
-.env
-app.log
-# Tests and local data
-tests/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# notebooks, tests, docs
 *.ipynb
+tests/
+docs/
+site/
+htmlcov/
+
+# big/local data
 data/
 datasets/
-# Tooling & caches
+models/
+downloads/
+.wheels/
+share/
 .cache/
-.next/
+.marimo/
+.streamlit/
+
+# OS/editor
 .DS_Store
+.idea/
+.vscode/
