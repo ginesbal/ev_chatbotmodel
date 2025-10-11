@@ -115,7 +115,6 @@ pip-wheel-metadata/
 # ---- App assets you don't want in git
 data/
 datasets/
-models/
 
 # ---- Vercel
 .vercel/
