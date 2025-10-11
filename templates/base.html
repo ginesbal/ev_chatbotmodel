@@ -6,9 +6,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>{% block title %}EVison Advisor{% endblock %}</title>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚡</text></svg>">
+  <!-- favicon -->
+  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
 
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
@@ -231,7 +230,7 @@
 
   <!-- Load saved.js FIRST - it defines window.EVisonClearFavs -->
   <script src="/static/js/saved.js" defer></script>
-  
+
   <!-- Then load page-specific scripts that depend on saved.js -->
   {% block extra_js %}{% endblock %}
 
