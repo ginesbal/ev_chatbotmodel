@@ -1,15 +1,8 @@
-# Ignore everything by default
-*
+# Keep junk out, but DO NOT exclude our source
+# Common local stuff
+.git/
+venv/
+__pycache__/
+*.pyc
+*.log
 
-# Allow API function, app package, templates, and static assets
-!api/**
-!app/**
-!templates/**
-!static/**
-
-# Allow root config files
-!requirements.txt
-!vercel.json
-!.vercelignore
-!pyproject.toml
-!Pipfile.lock
