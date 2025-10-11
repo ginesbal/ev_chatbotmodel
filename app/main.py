@@ -6,6 +6,7 @@ from app.config import Settings
 from app.routes.home import router as home_router
 from app.routes.search import router as search_router
 from app.routes.saved import router as saved_router
+from mangum import Mangum
 
 settings = Settings()
 app = FastAPI(title="EVison Advisor")
@@ -19,3 +20,14 @@ app.mount("/static", StaticFiles(directory=settings.static_dir), name="static")
 app.include_router(home_router)
 app.include_router(search_router)
 app.include_router(saved_router)
+
+
+from mangum import Mangum  # or 'asgi' adapter Vercel supports
+
+
+@app.get("/api/health")
+def health():
+    return {"ok": True}
+
+# Expose handler for serverless runtimes
+handler = Mangum(app)

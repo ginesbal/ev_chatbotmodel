@@ -1,0 +1,16 @@
+# Python cruft
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.env
+app.log
+# Tests and local data
+tests/
+*.ipynb
+data/
+datasets/
+# Tooling & caches
+.cache/
+.next/
+.DS_Store

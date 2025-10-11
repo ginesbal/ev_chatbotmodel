@@ -1,10 +1,10 @@
-fastapi
-uvicorn[standard]
-jinja2
-pydantic
-pydantic-settings
-python-multipart
-sentence-transformers
-numpy
-cachetools>=5.3
-itsdangerous>=2.2.0
+fastapi==0.115.*
+mangum==0.17.*
+jinja2==3.1.*
+pydantic==2.9.*
+pydantic-settings==2.5.*
+python-multipart==0.0.9
+itsdangerous==2.2.*
+cachetools==5.5.*
+# Optional if you call an API:
+httpx==0.27.*
