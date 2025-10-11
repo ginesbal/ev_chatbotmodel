@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
-
+# Make the repo root importable so `import app...` works both locally and on Vercel
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -21,7 +21,7 @@ app = FastAPI(title="EVison Advisor")
 
 app.add_middleware(SessionMiddleware, secret_key=settings.secret_key)
 
-# Mount /static if present
+# Static dir (falls back to ./static if Settings.static_dir is unset)
 static_path = Path(settings.static_dir or "static")
 if static_path.exists() and static_path.is_dir():
     app.mount("/static", StaticFiles(directory=str(static_path)), name="static")

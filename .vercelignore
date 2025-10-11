@@ -1,8 +1,13 @@
 # Ignore everything by default
 *
 
-# Allow only the serverless API code and a few root files
+# Allow API function, app package, templates, and static assets
 !api/**
+!app/**
+!templates/**
+!static/**
+
+# Allow root config files
 !requirements.txt
 !vercel.json
 !.vercelignore
