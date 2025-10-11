@@ -25,9 +25,9 @@ else:
     logging.warning("Static directory not found at %s; skipping mount.", static_path)
 
 try:
-    from .app.routes.home import router as home_router
-    from .app.routes.search import router as search_router
-    from .app.routes.saved import router as saved_router
+    from app.routes.home import router as home_router
+    from app.routes.search import router as search_router
+    from app.routes.saved import router as saved_router
 
     app.include_router(home_router)
     app.include_router(search_router)
