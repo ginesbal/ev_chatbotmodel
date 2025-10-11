@@ -1,35 +1,10 @@
-# virtualenvs & caches
-.venv/
-venv/
-env/
-ENV/
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
+# Ignore everything by default
+*
 
-# notebooks, tests, docs
-*.ipynb
-tests/
-docs/
-site/
-htmlcov/
-
-# big/local data
-data/
-datasets/
-models/
-downloads/
-.wheels/
-share/
-.cache/
-.marimo/
-.streamlit/
-
-# OS/editor
-.DS_Store
-.idea/
-.vscode/
+# Allow only the serverless API code and a few root files
+!api/**
+!requirements.txt
+!vercel.json
+!.vercelignore
+!pyproject.toml
+!Pipfile.lock
