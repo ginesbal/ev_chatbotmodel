@@ -61,7 +61,7 @@
   border: 1px solid var(--border);
   border-radius: 0.375rem;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: color 0.15s var(--ease-out-emil), border-color 0.15s var(--ease-out-emil), background-color 0.15s var(--ease-out-emil), transform var(--duration-press) var(--ease-out-emil);
 }
 
 .btn-clear:hover,
@@ -69,6 +69,11 @@
   color: #dc2626;
   border-color: #dc2626;
   background: rgba(220, 38, 38, 0.04);
+}
+
+.btn-clear:active,
+#clearSavedBtn:active {
+  transform: scale(var(--press-scale));
 }
 
 .btn-clear i,

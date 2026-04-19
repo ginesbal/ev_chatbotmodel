@@ -295,6 +295,17 @@ class EVisionApp {
     panel.style.top = `${rect.bottom + 10}px`;
     panel.style.left = `${rect.left}px`;
 
+    // Origin-aware scale-in from the trigger
+    const originX = rect.left < window.innerWidth / 2 ? 'left' : 'right';
+    panel.style.transformOrigin = `top ${originX}`;
+    panel.style.opacity = '0';
+    panel.style.transform = 'scale(0.96)';
+    panel.style.transition = 'opacity 160ms cubic-bezier(0.23, 1, 0.32, 1), transform 160ms cubic-bezier(0.23, 1, 0.32, 1)';
+    requestAnimationFrame(() => {
+      panel.style.opacity = '1';
+      panel.style.transform = 'scale(1)';
+    });
+
     // Close on click outside
     setTimeout(() => {
       document.addEventListener('click', (e) => {
@@ -539,11 +550,11 @@ class EVisionApp {
     // Animate
     button.animate([
       { transform: 'scale(1)' },
-      { transform: 'scale(1.2)' },
+      { transform: 'scale(1.08)' },
       { transform: 'scale(1)' }
     ], {
-      duration: 300,
-      easing: 'ease-out'
+      duration: 200,
+      easing: 'cubic-bezier(0.23, 1, 0.32, 1)'
     });
   }
 
@@ -820,6 +831,16 @@ class EVisionApp {
     `).join('');
 
     container.hidden = false;
+
+    // Origin-aware scale-in from the search input
+    container.style.transformOrigin = 'top left';
+    container.style.opacity = '0';
+    container.style.transform = 'scale(0.96)';
+    container.style.transition = 'opacity 160ms cubic-bezier(0.23, 1, 0.32, 1), transform 160ms cubic-bezier(0.23, 1, 0.32, 1)';
+    requestAnimationFrame(() => {
+      container.style.opacity = '1';
+      container.style.transform = 'scale(1)';
+    });
 
     // Add click handlers
     container.querySelectorAll('.suggestion-item').forEach(item => {

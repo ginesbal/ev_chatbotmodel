@@ -83,7 +83,7 @@
   border-radius: 0.75rem !important;
   background: #ffffff !important;
   color: #0f172a !important;
-  transition: all 200ms ease !important;
+  transition: border-color 200ms var(--ease-out-emil), box-shadow 200ms var(--ease-out-emil), background-color 200ms var(--ease-out-emil) !important;
   outline: none !important;
 }
 
@@ -108,7 +108,7 @@
   font-size: 1rem !important;
   font-weight: 600 !important;
   cursor: pointer !important;
-  transition: all 200ms ease !important;
+  transition: background-color 200ms var(--ease-out-emil), box-shadow 200ms var(--ease-out-emil), transform var(--duration-press) var(--ease-out-emil) !important;
   white-space: nowrap !important;
 }
 
@@ -119,7 +119,7 @@
 }
 
 .homepage .search-submit:active {
-  transform: translateY(0) !important;
+  transform: translateY(0) scale(var(--press-scale)) !important;
 }
 
 .homepage .search-submit svg {
@@ -155,7 +155,7 @@
   text-decoration: none !important;
   font-size: 0.875rem !important;
   font-weight: 500 !important;
-  transition: all 150ms ease !important;
+  transition: background-color 150ms var(--ease-out-emil), border-color 150ms var(--ease-out-emil), color 150ms var(--ease-out-emil), transform var(--duration-press) var(--ease-out-emil) !important;
 }
 
 .homepage .suggestion-chip:hover {
@@ -164,6 +164,10 @@
   color: #0a2472 !important;
   transform: translateY(-1px) !important;
   text-decoration: none !important;
+}
+
+.homepage .suggestion-chip:active {
+  transform: translateY(0) scale(var(--press-scale)) !important;
 }
 
 /* Browse Link */
@@ -179,13 +183,17 @@
   text-decoration: none !important;
   font-size: 0.95rem !important;
   font-weight: 500 !important;
-  transition: all 150ms ease !important;
+  transition: color 150ms var(--ease-out-emil), gap 150ms var(--ease-out-emil), transform var(--duration-press) var(--ease-out-emil) !important;
 }
 
 .homepage .browse-link:hover {
   color: #0a2472 !important;
   gap: 0.75rem !important;
   text-decoration: none !important;
+}
+
+.homepage .browse-link:active {
+  transform: scale(var(--press-scale)) !important;
 }
 
 .homepage .browse-link svg {
@@ -395,8 +403,13 @@
 }
 
 .search-button:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(var(--press-scale));
   box-shadow: var(--shadow-md);
+}
+
+.filter-link:active,
+.cta-button:active {
+  transform: scale(var(--press-scale));
 }
 
 .button-icon {

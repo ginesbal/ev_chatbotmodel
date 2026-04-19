@@ -38,13 +38,17 @@
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   white-space: nowrap;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s var(--ease-out-emil), border-color 0.15s var(--ease-out-emil), box-shadow 0.15s var(--ease-out-emil), transform var(--duration-press) var(--ease-out-emil);
 }
 
 .filter-item:hover {
   background: #ffffff;
   border-color: #3b82f6;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filter-item:active {
+  transform: scale(var(--press-scale));
 }
 
 .filter-item:focus-within {
@@ -92,7 +96,7 @@
   font-weight: 500;
   line-height: 1.2;
   text-align: center;
-  transition: all 0.15s ease;
+  transition: border-color 0.15s var(--ease-out-emil), box-shadow 0.15s var(--ease-out-emil), background-color 0.15s var(--ease-out-emil);
 }
 
 .fctl:focus {
@@ -187,7 +191,7 @@ select.fctl option {
   color: white;
   border: 1px solid var(--primary-600, #2563eb);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s var(--ease-out-emil), border-color 0.2s var(--ease-out-emil), transform var(--duration-press) var(--ease-out-emil);
 }
 
 .filter-actions .btn-xs:hover {
@@ -197,7 +201,7 @@ select.fctl option {
 }
 
 .filter-actions .btn-xs:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(var(--press-scale));
   background: var(--primary-700, #1d4ed8);
 }
 

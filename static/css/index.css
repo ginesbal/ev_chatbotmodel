@@ -63,7 +63,11 @@
 [role="tab"] {
   position: relative;
   overflow: hidden;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s var(--ease-out-emil), color 0.2s var(--ease-out-emil), transform var(--duration-press) var(--ease-out-emil);
+}
+
+[role="tab"]:active {
+  transform: scale(var(--press-scale));
 }
 
 [role="tab"]::after {
@@ -83,7 +87,7 @@
 }
 
 [role="tab"] .rounded-full {
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 [role="tab"]:hover:not([aria-selected="true"]) {
@@ -143,7 +147,7 @@ nav[aria-label="Pagination"] a:hover {
 }
 
 nav[aria-label="Pagination"] a:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(var(--press-scale));
 }
 
 [aria-current="page"] {
@@ -186,11 +190,11 @@ nav[aria-label="Pagination"] a:active {
 
 /* Fade-in animation for cards */
 .fade-in {
-  animation: fadeIn 0.5s ease forwards;
+  animation: cardFadeIn 0.5s var(--ease-out-emil) forwards;
   opacity: 0;
 }
 
-@keyframes fadeIn {
+@keyframes cardFadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
@@ -244,9 +248,11 @@ svg {
   transition: transform 0.2s ease;
 }
 
-button:hover svg,
-a:hover svg {
-  transform: scale(1.1);
+@media (hover: hover) and (pointer: fine) {
+  button:hover svg,
+  a:hover svg {
+    transform: scale(1.04);
+  }
 }
 
 /* Mobile responsiveness refinements */

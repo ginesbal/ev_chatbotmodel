@@ -249,7 +249,7 @@ button {
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   color: var(--text-secondary);
-  transition: all var(--duration-fast) var(--easing);
+  transition: background-color var(--duration-fast) var(--ease-out-emil), color var(--duration-fast) var(--ease-out-emil), transform var(--duration-press) var(--ease-out-emil);
   position: relative;
 }
 
@@ -293,7 +293,7 @@ button {
   height: 40px;
   border-radius: var(--radius-lg);
   color: var(--text-secondary);
-  transition: all var(--duration-fast) var(--easing);
+  transition: background-color var(--duration-fast) var(--ease-out-emil), color var(--duration-fast) var(--ease-out-emil), transform var(--duration-press) var(--ease-out-emil);
 }
 
 .theme-toggle:hover {
@@ -342,7 +342,7 @@ button {
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-lg);
   font-weight: var(--weight-medium);
-  transition: all var(--duration-fast) var(--easing);
+  transition: background-color var(--duration-fast) var(--ease-out-emil), color var(--duration-fast) var(--ease-out-emil), border-color var(--duration-fast) var(--ease-out-emil), box-shadow var(--duration-fast) var(--ease-out-emil), transform var(--duration-press) var(--ease-out-emil);
   cursor: pointer;
   border: none;
   white-space: nowrap;
@@ -360,7 +360,15 @@ button {
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(var(--press-scale));
+}
+
+.btn:active,
+.btn-secondary:active,
+.btn-ghost:active,
+.nav-item:active,
+.theme-toggle:active {
+  transform: scale(var(--press-scale));
 }
 
 .btn-secondary {
@@ -403,7 +411,7 @@ button {
   border-radius: var(--radius-lg);
   font-size: var(--text-base);
   color: var(--text-primary);
-  transition: all var(--duration-fast) var(--easing);
+  transition: border-color var(--duration-fast) var(--ease-out-emil), box-shadow var(--duration-fast) var(--ease-out-emil), background-color var(--duration-fast) var(--ease-out-emil);
 }
 
 .input:focus {
