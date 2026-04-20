@@ -33,6 +33,22 @@ input, button, textarea, select {
 h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
   font-weight: 600;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.tabular,
+.spec-row,
+.value-metric,
+.incentive-badge,
+.brand-label,
+.progress-track span {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
 
 #vanta-bg-global,

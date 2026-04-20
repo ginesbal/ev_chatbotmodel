@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy &mdash; EVison Advisor{% endblock %}
+{% block meta_description %}Privacy notice for EVison Advisor, an open portfolio project.{% endblock %}
+{% block og_title %}Privacy &mdash; EVison Advisor{% endblock %}
+
+{% block extra_css %}
+<style>
+  .legal {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 5rem;
+  }
+  .legal h1 {
+    font-size: clamp(1.75rem, 2vw + 1rem, 2.25rem);
+    margin: 0 0 1.5rem;
+    color: var(--text);
+  }
+  .legal h2 {
+    font-size: 1.125rem;
+    margin: 2rem 0 0.5rem;
+    color: var(--text);
+  }
+  .legal p,
+  .legal li {
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .legal p + p,
+  .legal ul {
+    margin-top: 0.75rem;
+  }
+  .legal ul {
+    padding-left: 1.25rem;
+  }
+  .legal .back-link {
+    display: inline-block;
+    margin-top: 2rem;
+    color: var(--primary-500);
+    text-decoration: none;
+  }
+  .legal .back-link:hover {
+    text-decoration: underline;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<article class="legal">
+  <h1>Privacy</h1>
+
+  <p>
+    EVison Advisor is a portfolio project built by Ehrl Balquin to demonstrate a search interface for electric vehicles. It is not a commercial service and does not sell anything.
+  </p>
+
+  <h2>What we collect</h2>
+  <ul>
+    <li>A session cookie used to keep your shortlist and theme preference between page loads.</li>
+    <li>Standard server logs (IP address, user agent, request path) retained briefly for debugging.</li>
+  </ul>
+
+  <h2>What we do not collect</h2>
+  <ul>
+    <li>No account registration, no email, no phone number, no payment details.</li>
+    <li>No third-party analytics trackers or advertising pixels.</li>
+  </ul>
+
+  <h2>Third parties</h2>
+  <p>
+    Fonts, icons, and the stylesheet CDN are loaded from public providers (Google Fonts, jsDelivr, Font Awesome, Cloudflare). Those providers may observe request metadata per their own policies.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    For questions about this page, reach out via the portfolio site linked in the footer.
+  </p>
+
+  <a class="back-link" href="/">&larr; Back to search</a>
+</article>
+{% endblock %}

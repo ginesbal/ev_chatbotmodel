@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Page not found &mdash; EVison Advisor{% endblock %}
+{% block meta_description %}The page you requested does not exist. Return to search or browse the EV catalogue.{% endblock %}
+{% block og_title %}Page not found{% endblock %}
+
+{% block extra_css %}
+<style>
+  .notfound {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 6rem 1.5rem 5rem;
+    text-align: center;
+  }
+  .notfound__code {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 10vw + 1rem, 7rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--primary-500);
+    margin: 0 0 1rem;
+  }
+  .notfound__title {
+    font-size: clamp(1.5rem, 2vw + 0.75rem, 2rem);
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 0.75rem;
+  }
+  .notfound__lede {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 auto 2rem;
+    max-width: 32rem;
+  }
+  .notfound__actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+  .notfound__ghost {
+    display: inline-flex;
+    align-items: center;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    transition: color 0.15s var(--ease-out-emil), background-color 0.15s var(--ease-out-emil);
+  }
+  .notfound__ghost:hover {
+    color: var(--primary-500);
+    background: var(--section-bg);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="notfound" aria-labelledby="notfound-title">
+  <p class="notfound__code" aria-hidden="true">404</p>
+  <h1 id="notfound-title" class="notfound__title">We can't find that page</h1>
+  <p class="notfound__lede">
+    The link may be broken, or the page may have moved. Try searching the catalogue, or head back to browse every EV we track.
+  </p>
+  <div class="notfound__actions">
+    <a href="/" class="btn btn-primary">Back to search</a>
+    <a href="/browse" class="notfound__ghost">Browse all EVs</a>
+  </div>
+</section>
+{% endblock %}

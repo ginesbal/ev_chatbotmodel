@@ -507,7 +507,7 @@
 
 #tabAll[aria-selected="true"],
 #tabSaved[aria-selected="true"] {
-    color: var(--accent-500) !important;
+    color: var(--primary-500) !important;
 }
 
 [data-theme="dark"] #tabAll:hover,

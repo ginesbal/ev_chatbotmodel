@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Terms &mdash; EVison Advisor{% endblock %}
+{% block meta_description %}Terms of use for EVison Advisor, an open portfolio project.{% endblock %}
+{% block og_title %}Terms &mdash; EVison Advisor{% endblock %}
+
+{% block extra_css %}
+<style>
+  .legal {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 5rem;
+  }
+  .legal h1 {
+    font-size: clamp(1.75rem, 2vw + 1rem, 2.25rem);
+    margin: 0 0 1.5rem;
+    color: var(--text);
+  }
+  .legal h2 {
+    font-size: 1.125rem;
+    margin: 2rem 0 0.5rem;
+    color: var(--text);
+  }
+  .legal p,
+  .legal li {
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .legal p + p,
+  .legal ul {
+    margin-top: 0.75rem;
+  }
+  .legal ul {
+    padding-left: 1.25rem;
+  }
+  .legal .back-link {
+    display: inline-block;
+    margin-top: 2rem;
+    color: var(--primary-500);
+    text-decoration: none;
+  }
+  .legal .back-link:hover {
+    text-decoration: underline;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<article class="legal">
+  <h1>Terms of use</h1>
+
+  <p>
+    EVison Advisor is a demonstration project. Vehicle data shown here is compiled from public sources and may be inaccurate, incomplete, or out of date. Do not rely on it for purchase decisions.
+  </p>
+
+  <h2>Use of the site</h2>
+  <p>
+    The interface is provided as-is, without warranty. You may browse, share, and link to any page. Automated scraping, excessive request rates, or attempts to overload the server are not permitted.
+  </p>
+
+  <h2>Content ownership</h2>
+  <p>
+    Brand names, model names, and vehicle images belong to their respective manufacturers. Code and copy on this site belong to Ehrl Balquin unless otherwise noted.
+  </p>
+
+  <h2>Affiliate disclosure</h2>
+  <p>
+    &ldquo;Configure&rdquo; links lead to the manufacturers' own websites. This project does not receive commissions or referral fees.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    These terms may be updated as the project evolves. Continued use of the site after changes means you accept the revised terms.
+  </p>
+
+  <a class="back-link" href="/">&larr; Back to search</a>
+</article>
+{% endblock %}

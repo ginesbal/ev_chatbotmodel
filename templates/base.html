@@ -6,21 +6,24 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>{% block title %}EVison Advisor{% endblock %}</title>
 
+  <meta name="description" content="{% block meta_description %}Find your next electric vehicle. Compare EVs by range, price, seating, and charging speed.{% endblock %}">
+  <meta name="theme-color" content="#0855d1">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% block og_title %}EVison Advisor{% endblock %}">
+  <meta property="og:description" content="{{ self.meta_description() }}">
+  <meta property="og:image" content="/static/images/og-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ self.og_title() }}">
+  <meta name="twitter:description" content="{{ self.meta_description() }}">
+
   <!-- favicon -->
   <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
 
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-    onload="this.onload=null;this.rel='stylesheet'">
-  <noscript>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
-  </noscript>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" href="/static/fonts/NataSans-Regular.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/static/fonts/NataSans-SemiBold.woff2" crossorigin>
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/lucide@0.263.1/dist/lucide.css" rel="stylesheet">
@@ -32,7 +35,7 @@
 
   <style>
     body {
-      font-family: "Inter", system-ui, -apple-system, "Poppins", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      font-family: "Nata Sans", system-ui, -apple-system, "Inter", Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -89,7 +92,38 @@
       padding: 1.25rem 1rem;
       color: var(--muted, #6b7280);
       font-size: .875rem;
-      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+    }
+
+    .site-footer .footer-credit {
+      margin: 0;
+    }
+
+    .site-footer .footer-legal {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .site-footer .footer-legal a {
+      color: var(--muted, #6b7280);
+      text-decoration: none;
+      transition: color .15s var(--ease-out-emil, ease);
+    }
+
+    .site-footer .footer-legal a:hover {
+      color: var(--primary-500, #0855d1);
+    }
+
+    @media (max-width: 560px) {
+      .site-footer .footer-container {
+        justify-content: center;
+        text-align: center;
+      }
     }
 
     .nav-icon,
@@ -103,7 +137,7 @@
   {% block extra_css %}{% endblock %}
 </head>
 
-<body class="{% block body_class %}{% endblock %} antialiased" style="background:var(--bg); color:var(--text);">
+<body class="{% block body_class %}{% endblock %} antialiased">
   <a href="#main" class="skip-link">Skip to main content</a>
 
   <div id="vanta-bg-global" aria-hidden="true"></div>
@@ -114,7 +148,12 @@
 
   <footer class="site-footer">
     <div class="footer-container">
-      <p>&copy; For Ehrl Balquin's Portfolio</p>
+      <p class="footer-credit">&copy; 2026 Ehrl Balquin &mdash; portfolio project</p>
+      <nav class="footer-legal" aria-label="Legal">
+        <a href="/privacy">Privacy</a>
+        <span aria-hidden="true">&middot;</span>
+        <a href="/terms">Terms</a>
+      </nav>
     </div>
   </footer>
 
