@@ -72,7 +72,7 @@
 /* Main Container */
 .browse-container {
     background: #f8fafc;
-    min-height: 60vh;
+    min-height: 60dvh;
     padding: 2rem 0;
 }
 

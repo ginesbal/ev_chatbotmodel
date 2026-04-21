@@ -174,17 +174,16 @@
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+    box-shadow: var(--shadow-md);
+    transition: transform 200ms var(--ease-out-emil), box-shadow 200ms var(--ease-out-emil), border-color 200ms var(--ease-out-emil);
     overflow: hidden;
     height: 100%;
-    min-height: 420px;
 }
 
 .card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    border-color: #0a2472;
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-500);
 }
 
 .card:active {
@@ -221,15 +220,30 @@
 /* Incentive Badge */
 .incentive-badge {
     position: absolute;
-    top: 12px;
-    left: 12px;
-    background: #0e6ba8;
+    top: 10px;
+    left: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: var(--primary-500);
     color: #ffffff;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.375rem 0.75rem;
-    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+    padding: 0.4375rem 0.75rem;
+    border-radius: 999px;
+    box-shadow: var(--shadow-md);
     z-index: 10;
+}
+
+.incentive-badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #ffffff;
+    opacity: 0.9;
 }
 
 /* Card Content - Override Tailwind classes */
@@ -308,31 +322,31 @@
     font-size: 0.75rem;
 }
 
-/* Value Metric - RIGHT ABOVE BUTTON - Override Tailwind */
+/* Value Metric - Hero position at top of card content */
 .value-metric {
   display: flex !important;
-  align-items: center;
-  justify-content: flex-end !important;
-  gap: 0.375rem;
-  padding: 0.75rem 0;
-  margin-top: auto !important;
-  margin-bottom: 0.5rem !important;
-  border-top: 1px solid #f1f5f9;
-  text-align: right;
+  align-items: baseline;
+  gap: 0.4375rem;
+  margin: 0 0 0.625rem 0 !important;
+  padding: 0;
   background: transparent;
 }
 
 .metric-value {
-  order: 1;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #0f172a;
+  font-family: var(--font-sans);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--primary-500);
+  font-variant-numeric: tabular-nums;
 }
 
 .metric-label {
-  order: 2;
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: #64748b;
 }/* Duotone Effect - Removed */
 .duotone {

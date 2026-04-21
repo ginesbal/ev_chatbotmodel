@@ -176,16 +176,12 @@ nav[aria-label="Pagination"] a:active {
 
 /* Card hover effects */
 .card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
+  transition: transform 0.2s var(--ease-out-emil), box-shadow 0.2s var(--ease-out-emil), opacity 0.3s var(--ease-out-emil);
 }
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
-[data-theme="dark"] .card:hover {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Fade-in animation for cards */

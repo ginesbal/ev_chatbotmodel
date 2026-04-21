@@ -52,6 +52,12 @@
 
     <!-- vehicle details -->
     <div class="flex flex-col flex-1 p-4">
+      <!-- hero value metric -->
+      <div class="value-metric tabular" title="Price per kilometer of range (CAD)">
+        <span class="metric-value">{% if vpk is not none %}${{ '{:,.0f}'.format(vpk) }}{% else %}&mdash;{% endif %}</span>
+        <span class="metric-label">per km of range</span>
+      </div>
+
       <div class="mb-2">
         <div class="relative">
           <h3 class="text-base font-semibold truncate pr-8 min-w-0">{{ model_name }}</h3>
@@ -60,7 +66,7 @@
         <p class="text-sm text-muted brand-label">{{ ev.brand }}</p>
 
         <div class="mt-1 flex items-center gap-2 flex-wrap">
-          <span class="text-sm text-muted" title="Approximate total price (CAD)">{{ price_disp }} CAD</span>
+          <span class="text-sm text-muted tabular" title="Approximate total price (CAD)">{{ price_disp }} CAD</span>
           {% if powertrain %}<span class="badge" title="Powertrain">{{ powertrain }}</span>{% endif %}
           {% if has_incent %}<span class="badge" title="Estimated incentive available">Incentive</span>{% endif %}
         </div>
@@ -68,25 +74,10 @@
 
       <!-- specifications -->
       <div class="spec-row" aria-label="Specifications">
-        <span class="spec-item"><i class="fas fa-user-friends" aria-hidden="true"></i>{{ seats_disp }}</span>
-        <span class="spec-item"><i class="fas fa-charging-station" aria-hidden="true"></i>{{ fast_kw }}</span>
+        <span class="spec-item tabular"><i class="fas fa-user-friends" aria-hidden="true"></i>{{ seats_disp }}</span>
+        <span class="spec-item tabular"><i class="fas fa-charging-station" aria-hidden="true"></i>{{ fast_kw }}</span>
         <span class="spec-item"><i class="fas fa-car-side" aria-hidden="true"></i>{{ drive_disp }}</span>
       </div>
-
-      <!-- value metric -->
-      <div class="value-metric" title="Price per kilometer (CAD)">
-        {% if vpk is not none %}
-        <span class="metric-label">$/km</span>
-        <span class="metric-value">${{ '{:,.0f}'.format(vpk) }}</span>
-        {% else %}
-        <span class="metric-label">$/km</span>
-        <span class="metric-value">—</span>
-        {% endif %}
-      </div>
-
-      <i class="fas fa-info-circle absolute bottom-61 right-6 text-muted text-xs"
-        title="Year: {{ ev.year or '—' }}&#10;Clearance: {{ ev.clearance or '—' }} in&#10;Tax Credit: {{ ev.taxCreditAmount or 'N/A' }}"
-        aria-hidden="true"></i>
 
       <!-- configure button -->
       <a href="{{ ev.build_link if ev.build_link else '#' }}" target="_blank" rel="noopener noreferrer"
