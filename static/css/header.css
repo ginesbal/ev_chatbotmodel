@@ -43,7 +43,7 @@
   min-width: 70px;
   height: 40px;
   border-radius: 20px;
-  background: linear-gradient(135deg, #1e40af, #1d4ed8);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,7 +85,7 @@
 }
 
 .logo-accent {
-  color: #0a2472;
+  color: var(--primary-700);
   font-weight: 400;
 }
 
@@ -112,7 +112,7 @@
 
 .nav-link:hover {
   background: #eff6ff;
-  color: #1e40af;
+  color: var(--primary-600);
   text-decoration: none;
   transform: translateY(-1px);
 }
@@ -131,7 +131,7 @@
   min-width: 20px;
   height: 20px;
   padding: 0 6px;
-  background: #0a2472;
+  background: var(--primary-700);
   color: white;
   font-size: 0.7rem;
   font-weight: 600;
@@ -161,7 +161,7 @@
 
 .icon-btn:hover {
   background: #eff6ff;
-  color: #1e40af;
+  color: var(--primary-600);
   transform: translateY(-1px);
 }
 

@@ -7,7 +7,7 @@
     position: relative;
     padding: 3rem 1.5rem;
     background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-    border-bottom: 2px solid #0a2472;
+    border-bottom: 2px solid var(--primary-700);
     overflow: hidden;
 }
 
@@ -19,8 +19,8 @@
     right: 0;
     bottom: 0;
     background: 
-        linear-gradient(90deg, transparent 0%, transparent 95%, #0a2472 95%, #0a2472 100%),
-        linear-gradient(0deg, transparent 0%, transparent 95%, #0a2472 95%, #0a2472 100%);
+        linear-gradient(90deg, transparent 0%, transparent 95%, var(--primary-700) 95%, var(--primary-700) 100%),
+        linear-gradient(0deg, transparent 0%, transparent 95%, var(--primary-700) 95%, var(--primary-700) 100%);
     background-size: 50px 50px;
     opacity: 0.03;
     pointer-events: none;
@@ -45,7 +45,7 @@
 }
 
 .browse-title-accent {
-    color: #0a2472;
+    color: var(--primary-700);
 }
 
 .browse-subtitle {
@@ -105,7 +105,7 @@
 }
 
 .breadcrumb-link:hover {
-    color: #0a2472;
+    color: var(--primary-700);
     text-decoration: underline;
 }
 
@@ -114,7 +114,7 @@
 }
 
 .breadcrumb-current {
-    color: #0a2472;
+    color: var(--primary-700);
     font-weight: 600;
 }
 
@@ -156,13 +156,13 @@
 }
 
 .tab-button:hover {
-    color: #0a2472;
+    color: var(--primary-700);
     background: #f8fafc;
 }
 
 .tab-button.tab-active {
     color: #ffffff;
-    background: #0a2472;
+    background: var(--primary-700);
 }
 
 .tab-badge {
@@ -176,13 +176,13 @@
     font-weight: 600;
     line-height: 1;
     border-radius: 999px;
-    background: #0e6ba8;
+    background: var(--primary-500);
     color: #ffffff;
 }
 
 .tab-button.tab-active .tab-badge {
     background: #ffffff;
-    color: #0a2472;
+    color: var(--primary-700);
 }
 
 .browse-count {
@@ -199,7 +199,7 @@
 
 .count-number {
     font-weight: 700;
-    color: #0a2472;
+    color: var(--primary-700);
 }
 
 @media (max-width: 640px) {

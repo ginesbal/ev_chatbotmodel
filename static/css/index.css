@@ -29,11 +29,6 @@
   transition: box-shadow 0.3s ease;
 }
 
-[data-theme="dark"] .glass {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .glass:hover {
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
 }
@@ -92,10 +87,6 @@
 
 [role="tab"]:hover:not([aria-selected="true"]) {
   background: rgba(0, 0, 0, 0.02);
-}
-
-[data-theme="dark"] [role="tab"]:hover:not([aria-selected="true"]) {
-  background: rgba(255, 255, 255, 0.05);
 }
 
 /* Loading state refinements */
@@ -168,10 +159,6 @@ nav[aria-label="Pagination"] a:active {
 
 .filters-section:hover {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-}
-
-[data-theme="dark"] .filters-section:hover {
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Card hover effects */

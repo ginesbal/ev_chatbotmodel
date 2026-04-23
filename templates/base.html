@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="font-sans" data-theme="{{ request.cookies.get('theme','light') }}">
+<html lang="en" class="font-sans">
 
 <head>
   <meta charset="UTF-8">
@@ -126,9 +126,7 @@
       }
     }
 
-    .nav-icon,
-    .theme-icon-light,
-    .theme-icon-dark {
+    .nav-icon {
       display: inline-block;
       vertical-align: middle;
     }
@@ -179,25 +177,6 @@
       }, 100);
     });
 
-    const themeBtn = document.getElementById('theme-toggle');
-    if (themeBtn) {
-      themeBtn.addEventListener('click', () => {
-        const html = document.documentElement;
-        const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
-        html.dataset.theme = next;
-        document.cookie = `theme=${next};path=/;max-age=31536000`;
-
-        const icon = themeBtn.querySelector('i');
-        if (icon) {
-          icon.classList.toggle('fa-sun');
-          icon.classList.toggle('fa-moon');
-        }
-        if (typeof LazyLoader !== 'undefined') {
-          LazyLoader.updateVantaTheme();
-        }
-      });
-    }
-
     document.addEventListener('keydown', (e) => {
       const tag = document.activeElement?.tagName || '';
       const typing = /INPUT|TEXTAREA|SELECT/.test(tag);
@@ -240,20 +219,6 @@
       <path
         d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z">
       </path>
-    </symbol>
-    <symbol id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="5"></circle>
-      <line x1="12" y1="1" x2="12" y2="3"></line>
-      <line x1="12" y1="21" x2="12" y2="23"></line>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-      <line x1="1" y1="12" x2="3" y2="12"></line>
-      <line x1="21" y1="12" x2="23" y2="12"></line>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-    </symbol>
-    <symbol id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
     </symbol>
     <symbol id="icon-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>

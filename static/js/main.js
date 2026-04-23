@@ -4,7 +4,6 @@ const EVApp = {
     this.setupSearch();
     this.setupSaved();
     this.setupFilters();
-    this.setupTheme();
   },
 
   // Search functionality
@@ -111,24 +110,6 @@ const EVApp = {
     const selects = form.querySelectorAll('select');
     selects.forEach(select => {
       select.addEventListener('change', () => form.submit());
-    });
-  },
-
-  // Theme toggle
-  setupTheme() {
-    const btn = document.getElementById('theme-toggle');
-    if (!btn) return;
-
-    btn.addEventListener('click', () => {
-      const html = document.documentElement;
-      const isDark = html.dataset.theme === 'dark';
-      html.dataset.theme = isDark ? 'light' : 'dark';
-      localStorage.setItem('theme', isDark ? 'light' : 'dark');
-      
-      const icon = btn.querySelector('i');
-      if (icon) {
-        icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
-      }
     });
   },
 

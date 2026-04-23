@@ -176,21 +176,6 @@ window.LazyLoader = {
         }
     },
 
-    updateVantaTheme() {
-        if (!window.__vanta) return;
-
-        const dark = document.documentElement.dataset.theme === 'dark';
-        try {
-            window.__vanta.setOptions({
-                color: dark ? 0x4466aa : 0x8899cc,
-                backgroundColor: dark ? 0x0f172a : 0xf0f4f8
-            });
-            console.log('vanta theme updated');
-        } catch (error) {
-            console.error('error updating theme:', error);
-        }
-    },
-
     async loadAnime() {
         if (this.loaded.anime) return;
         await this.loadScript('https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js');
