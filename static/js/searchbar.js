@@ -1,6 +1,48 @@
-// Search bar behavior: clear action, feedback states, "/" focus, Escape
-// Visibility of clear + kbd is pure CSS (:placeholder-shown / :focus-within).
+// Search bar behavior: rotating placeholder, clear action, feedback,
+// "/" focus, Escape. Visibility of clear/kbd is pure CSS.
 (() => {
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ROTATION_MS = 3800;
+    const FADE_MS = 260;
+
+    function startPlaceholderRotation(input) {
+        if (reduceMotion) return;
+        let prompts;
+        try { prompts = JSON.parse(input.dataset.placeholders || '[]'); }
+        catch { return; }
+        if (!Array.isArray(prompts) || prompts.length < 2) return;
+
+        let idx = 0;
+        let timer = null;
+        let paused = false;
+
+        const step = () => {
+            if (paused || input.value.length > 0) return;
+            input.dataset.phFading = '';
+            setTimeout(() => {
+                idx = (idx + 1) % prompts.length;
+                input.setAttribute('placeholder', prompts[idx]);
+                input.removeAttribute('data-ph-fading');
+            }, FADE_MS);
+        };
+
+        const start = () => {
+            stop();
+            timer = setInterval(step, ROTATION_MS);
+        };
+        const stop = () => {
+            if (timer) { clearInterval(timer); timer = null; }
+        };
+
+        input.addEventListener('focus', () => { paused = true; stop(); });
+        input.addEventListener('blur', () => {
+            paused = false;
+            if (input.value.length === 0) start();
+        });
+
+        start();
+    }
+
     function initSearchForm(form) {
         const input = form.querySelector('.search-input');
         const clearBtn = form.querySelector('#search-clear');
@@ -8,6 +50,8 @@
         const feedback = form.querySelector('#search-feedback');
 
         if (!input || !submit) return;
+
+        startPlaceholderRotation(input);
 
         const setBusy = (busy) => {
             form.setAttribute('aria-busy', String(busy));

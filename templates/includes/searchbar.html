@@ -25,6 +25,7 @@
       name="search_query"
       type="search"
       placeholder="Try &ldquo;family SUV under 60k&rdquo;"
+      data-placeholders='["Try &ldquo;family SUV under 60k&rdquo;","Describe your range needs&hellip;","e.g. &ldquo;Tesla Model 3 alternative&rdquo;","e.g. &ldquo;7 seats, fast charging&rdquo;"]'
       class="search-input"
       aria-label="Search electric vehicles"
       aria-describedby="search-feedback"
@@ -59,6 +60,26 @@
         </svg>
       </button>
     </div>
+  </div>
+
+  <div class="search-suggestions" aria-label="Common searches">
+    <span class="search-suggestions-label" aria-hidden="true">Or try</span>
+    <a href="/search?search_query=SUV%20under%2050000&is_suv=true&max_price=50000&page=1" class="search-suggestion">
+      <span class="search-suggestion-dot" aria-hidden="true"></span>
+      Under <span class="tabular">$50k</span>
+    </a>
+    <a href="/search?sort=range_desc&page=1" class="search-suggestion">
+      <span class="search-suggestion-dot" aria-hidden="true"></span>
+      Longest range
+    </a>
+    <a href="/search?search_query=family%20SUV&is_suv=true&seats=7&page=1" class="search-suggestion">
+      <span class="search-suggestion-dot" aria-hidden="true"></span>
+      <span class="tabular">7</span>-seat family
+    </a>
+    <a href="/search?sort=price_asc&page=1" class="search-suggestion">
+      <span class="search-suggestion-dot" aria-hidden="true"></span>
+      Cheapest first
+    </a>
   </div>
 
   <div

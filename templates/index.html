@@ -5,7 +5,7 @@ Search Results — EVision{%- if page and total_pages %} (Page {{ page }} of {{ 
 {%- endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="/static/css/search_results.css?v=6">
+<link rel="stylesheet" href="/static/css/search_results.css?v=7">
 <style>
   /* Clean tabs design */
   .results-tabs-bar {
@@ -178,22 +178,6 @@ Search Results — EVision{%- if page and total_pages %} (Page {{ page }} of {{ 
     <div class="search-results-searchbar">
       {% include 'includes/searchbar.html' %}
     </div>
-
-    <!-- quick filters -->
-    <nav class="search-results-quick-filters" aria-label="Quick filters">
-      <a href="/search?search_query=SUV%20under%2050000&is_suv=true&max_price=50000&page=1" class="quick-filter-chip">
-        <i class="fas fa-dollar-sign"></i> Under $50k
-      </a>
-      <a href="/search?sort=price_asc&page=1" class="quick-filter-chip">
-        <i class="fas fa-arrow-up"></i> Cheapest
-      </a>
-      <a href="/search?search_query=family%20SUV&is_suv=true&seats=7&page=1" class="quick-filter-chip">
-        <i class="fas fa-users"></i> Family size
-      </a>
-      <a href="/search?sort=range_desc&page=1" class="quick-filter-chip">
-        <i class="fas fa-road"></i> Best range
-      </a>
-    </nav>
   </div>
 </section>
 
