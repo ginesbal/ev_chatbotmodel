@@ -1,34 +1,53 @@
-// Search bar behavior: rotating placeholder, clear action, feedback,
-// "/" focus, Escape. Visibility of clear/kbd is pure CSS.
+// Search bar behavior: sliding placeholder rotation, clear action,
+// feedback states, Escape-to-clear. Visibility of the clear button is
+// driven by CSS (:has + :placeholder-shown); JS only owns the rotation
+// and the focus/invalid state data-attributes.
 (() => {
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const ROTATION_MS = 3800;
-    const FADE_MS = 260;
+    const SLIDE_MS = 260;
 
-    function startPlaceholderRotation(input) {
-        if (reduceMotion) return;
+    function startPlaceholderRotation(form, input) {
+        const span = form.querySelector('.search-placeholder-visual');
+        if (!span) return;
+
         let prompts;
         try { prompts = JSON.parse(input.dataset.placeholders || '[]'); }
         catch { return; }
         if (!Array.isArray(prompts) || prompts.length < 2) return;
 
+        span.textContent = prompts[0];
+
+        if (reduceMotion) return;
+
         let idx = 0;
         let timer = null;
         let paused = false;
 
-        const step = () => {
+        const swap = () => {
+            // don't animate when the user is focused or typing
             if (paused || input.value.length > 0) return;
-            input.dataset.phFading = '';
+
+            // exit up
+            span.dataset.phAnim = 'out';
+
             setTimeout(() => {
                 idx = (idx + 1) % prompts.length;
-                input.setAttribute('placeholder', prompts[idx]);
-                input.removeAttribute('data-ph-fading');
-            }, FADE_MS);
+                span.textContent = prompts[idx];
+
+                // snap below (no transition), then release on next frame
+                span.dataset.phAnim = 'in';
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        delete span.dataset.phAnim;
+                    });
+                });
+            }, SLIDE_MS);
         };
 
         const start = () => {
             stop();
-            timer = setInterval(step, ROTATION_MS);
+            timer = setInterval(swap, ROTATION_MS);
         };
         const stop = () => {
             if (timer) { clearInterval(timer); timer = null; }
@@ -38,6 +57,10 @@
         input.addEventListener('blur', () => {
             paused = false;
             if (input.value.length === 0) start();
+        });
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) stop();
+            else if (!paused && input.value.length === 0) start();
         });
 
         start();
@@ -51,7 +74,7 @@
 
         if (!input || !submit) return;
 
-        startPlaceholderRotation(input);
+        form.dataset.jsReady = '';
 
         const setBusy = (busy) => {
             form.setAttribute('aria-busy', String(busy));
@@ -65,6 +88,9 @@
             if (state) feedback.dataset.state = state;
             else feedback.removeAttribute('data-state');
         };
+
+        input.addEventListener('focus', () => { form.dataset.hasFocus = ''; });
+        input.addEventListener('blur', () => { delete form.dataset.hasFocus; });
 
         input.addEventListener('input', () => {
             const q = input.value.trim();
@@ -98,24 +124,16 @@
         });
 
         setBusy(false);
+        startPlaceholderRotation(form, input);
     }
 
     document.querySelectorAll('form.search-component').forEach(initSearchForm);
 
-    // "/" focuses the first search input; Escape clears or blurs
+    // Escape in the search input clears it (or blurs if already empty).
+    // The global "/" focus shortcut was removed — it wasn't discoverable.
     document.addEventListener('keydown', (e) => {
         const active = document.activeElement;
-        const inField = active &&
-            (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable);
-
-        if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey && !inField) {
-            const firstInput = document.querySelector('.search-component .search-input');
-            if (firstInput) {
-                e.preventDefault();
-                firstInput.focus();
-                firstInput.select();
-            }
-        } else if (e.key === 'Escape' && active?.classList.contains('search-input')) {
+        if (e.key === 'Escape' && active?.classList.contains('search-input')) {
             const form = active.closest('form.search-component');
             if (active.value) {
                 active.value = '';

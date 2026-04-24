@@ -177,23 +177,8 @@
       }, 100);
     });
 
-    document.addEventListener('keydown', (e) => {
-      const tag = document.activeElement?.tagName || '';
-      const typing = /INPUT|TEXTAREA|SELECT/.test(tag);
-      if (e.key === '/' && !typing) {
-        e.preventDefault();
-        const searchInput = document.getElementById('search_query');
-        if (searchInput) {
-          searchInput.focus();
-          searchInput.select();
-        }
-      } else if (e.key === 'Escape') {
-        const searchInput = document.getElementById('search_query');
-        if (searchInput) {
-          searchInput.value = '';
-        }
-      }
-    });
+    // Escape-to-clear is handled by searchbar.js on the search page;
+    // nothing else is globally keyed here.
   </script>
 
   <div id="loadingOverlay" role="dialog" aria-modal="true" aria-label="Loading">

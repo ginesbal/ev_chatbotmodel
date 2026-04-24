@@ -295,15 +295,15 @@ nav[aria-label="Pagination"] {
 }
 
 /* ============================================================
-   Search Component — command-bar style
-   Left-anchored glyph, visible "/" kbd hint, animated focus underline.
+   Search Component
+   Left-anchored glyph, single focus underline that grows from the
+   left, always-visible submit that fills once the input has content.
    ============================================================ */
 .search-component {
   width: 100%;
 }
 
 .search-field {
-  --field-accent: var(--primary-500);
   position: relative;
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -315,10 +315,12 @@ nav[aria-label="Pagination"] {
   box-shadow: var(--shadow-sm);
   transition:
     border-color 180ms var(--ease-out-emil),
-    box-shadow 180ms var(--ease-out-emil),
-    background-color 180ms var(--ease-out-emil);
+    box-shadow 180ms var(--ease-out-emil);
 }
 
+/* Distinctive focus signature — a single quiet underline that grows
+   from the left. No outer ring, no prefix/submit color shift: those
+   were competing signals that made the focus state feel noisy. */
 .search-field::after {
   content: "";
   position: absolute;
@@ -326,7 +328,7 @@ nav[aria-label="Pagination"] {
   right: 0.875rem;
   bottom: 0;
   height: 2px;
-  background: var(--field-accent);
+  background: var(--primary-500);
   border-radius: 2px;
   transform: scaleX(0);
   transform-origin: left center;
@@ -335,8 +337,7 @@ nav[aria-label="Pagination"] {
 }
 
 .search-field:focus-within {
-  border-color: var(--field-accent);
-  box-shadow: var(--shadow-md), 0 0 0 3px rgba(var(--color-primary-rgb), 0.12);
+  border-color: var(--primary-500);
 }
 
 .search-field:focus-within::after {
@@ -349,18 +350,27 @@ nav[aria-label="Pagination"] {
   justify-content: center;
   width: 2.5rem;
   padding-left: 0.875rem;
-  color: #9ca3af;
+  color: #6b7280;
   transition: color 180ms var(--ease-out-emil);
   pointer-events: none;
 }
 
-.search-field:focus-within .search-prefix,
+/* Prefix brightens once the user has typed something — feedback that the
+   query is registered, kept separate from the focus state. */
 .search-component:has(.search-input:not(:placeholder-shown)) .search-prefix {
-  color: var(--field-accent);
+  color: var(--primary-500);
+}
+
+.search-input-wrap {
+  position: relative;
+  grid-column: 2;
+  min-width: 0;
+  display: flex;
+  align-items: center;
 }
 
 .search-input {
-  grid-column: 2;
+  width: 100%;
   min-width: 0;
   padding: 0.875rem 0.5rem;
   font: inherit;
@@ -371,10 +381,19 @@ nav[aria-label="Pagination"] {
   border: none;
   outline: none;
   appearance: none;
+  position: relative;
+  z-index: 1;
 }
 
+/* Native placeholder remains as no-JS fallback. When JS enhances the form,
+   .search-component gets [data-js-ready] and we hide the native placeholder
+   in favor of an animated overlay span. */
 .search-input::placeholder {
   color: #9ca3af;
+}
+
+.search-component[data-js-ready] .search-input::placeholder {
+  color: transparent;
 }
 
 .search-input::-webkit-search-cancel-button,
@@ -383,40 +402,54 @@ nav[aria-label="Pagination"] {
   appearance: none;
 }
 
+/* Animated placeholder — slides up out, new text starts below, slides up in */
+.search-placeholder-visual {
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  display: none;
+  font-size: 1rem;
+  line-height: 1;
+  color: #9ca3af;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 0.5rem);
+  transform: translateY(-50%);
+  transition:
+    opacity 240ms var(--ease-out-emil),
+    transform 240ms var(--ease-out-emil);
+}
+
+.search-component[data-js-ready] .search-placeholder-visual {
+  display: inline-block;
+}
+
+/* Fade the span out when the input has focus or content — native focus ring
+   is off, the border + underline carry the signal instead. */
+.search-component[data-has-focus] .search-placeholder-visual,
+.search-component:has(.search-input:not(:placeholder-shown)) .search-placeholder-visual {
+  opacity: 0;
+}
+
+/* Slide states, set by JS one frame at a time */
+.search-placeholder-visual[data-ph-anim="out"] {
+  opacity: 0;
+  transform: translateY(calc(-50% - 10px));
+}
+
+.search-placeholder-visual[data-ph-anim="in"] {
+  opacity: 0;
+  transform: translateY(calc(-50% + 10px));
+  transition: none;
+}
+
 .search-actions {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
   padding-right: 0.375rem;
-}
-
-/* Keyboard hint chip — surfaces the already-wired "/" shortcut */
-.search-kbd-hint {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.5rem;
-  height: 1.5rem;
-  padding: 0 0.375rem;
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: 1;
-  color: #6b7280;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.375rem;
-  margin-right: 0.125rem;
-  transition:
-    opacity 150ms var(--ease-out-emil),
-    transform 150ms var(--ease-out-emil);
-}
-
-.search-field:focus-within .search-kbd-hint,
-.search-component:has(.search-input:not(:placeholder-shown)) .search-kbd-hint {
-  opacity: 0;
-  transform: scale(0.92);
-  pointer-events: none;
 }
 
 /* Clear button — visible only when input has content */
@@ -427,7 +460,7 @@ nav[aria-label="Pagination"] {
   width: 1.75rem;
   height: 1.75rem;
   padding: 0;
-  color: #9ca3af;
+  color: #6b7280;
   background: transparent;
   border: none;
   border-radius: 0.375rem;
@@ -459,22 +492,27 @@ nav[aria-label="Pagination"] {
   transform: scale(var(--press-scale));
 }
 
-/* Submit button — de-emphasized; Enter key is the primary path */
+/* Submit button — visible by default, "lights up" when ready.
+   Rest state: dark icon on a quiet chip so it never blends with the field.
+   Ready state: filled --primary-500 pill with a white icon — unmistakable.
+   Keeps the two states visually distinct without resorting to the
+   template-library "always-filled blue button". */
 .search-submit {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 2.25rem;
+  height: 2.25rem;
   padding: 0;
-  color: #9ca3af;
-  background: transparent;
-  border: none;
+  color: #1f2937;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   cursor: pointer;
   transition:
     color 180ms var(--ease-out-emil),
     background-color 180ms var(--ease-out-emil),
+    border-color 180ms var(--ease-out-emil),
     transform var(--duration-press) var(--ease-out-emil);
 }
 
@@ -482,18 +520,27 @@ nav[aria-label="Pagination"] {
   transition: transform 180ms var(--ease-out-emil);
 }
 
-.search-field:focus-within .search-submit,
 .search-component:has(.search-input:not(:placeholder-shown)) .search-submit {
-  color: var(--field-accent);
+  color: #ffffff;
+  background: var(--primary-500);
+  border-color: var(--primary-500);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .search-submit:hover {
-    background: rgba(var(--color-primary-rgb), 0.08);
+    color: var(--text, #111827);
+    background: #e5e7eb;
+    border-color: #d1d5db;
   }
 
   .search-submit:hover svg {
     transform: translateX(2px);
+  }
+
+  .search-component:has(.search-input:not(:placeholder-shown)) .search-submit:hover {
+    color: #ffffff;
+    background: var(--primary-600);
+    border-color: var(--primary-600);
   }
 }
 
@@ -527,18 +574,11 @@ nav[aria-label="Pagination"] {
 }
 
 .search-feedback[data-state="ready"] {
-  color: var(--field-accent);
+  color: var(--primary-500);
 }
 
 .search-feedback[data-state="error"] {
   color: #dc2626;
-}
-
-/* Hide kbd hint on touch devices where "/" is unreachable anyway */
-@media (hover: none) {
-  .search-kbd-hint {
-    display: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -548,7 +588,7 @@ nav[aria-label="Pagination"] {
   .search-clear,
   .search-submit,
   .search-submit svg,
-  .search-kbd-hint,
+  .search-placeholder-visual,
   .search-input::placeholder {
     transition: none;
   }

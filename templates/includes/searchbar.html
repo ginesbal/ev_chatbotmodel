@@ -20,25 +20,26 @@
     </span>
 
     <label for="search_query" class="sr-only">Search electric vehicles</label>
-    <input
-      id="search_query"
-      name="search_query"
-      type="search"
-      placeholder="Try &ldquo;family SUV under 60k&rdquo;"
-      data-placeholders='["Try &ldquo;family SUV under 60k&rdquo;","Describe your range needs&hellip;","e.g. &ldquo;Tesla Model 3 alternative&rdquo;","e.g. &ldquo;7 seats, fast charging&rdquo;"]'
-      class="search-input"
-      aria-label="Search electric vehicles"
-      aria-describedby="search-feedback"
-      autocapitalize="off"
-      autocorrect="off"
-      spellcheck="false"
-      enterkeyhint="search"
-      data-lpignore="true"
-    />
+    <div class="search-input-wrap">
+      <input
+        id="search_query"
+        name="search_query"
+        type="search"
+        placeholder="Try &ldquo;family SUV under 60k&rdquo;"
+        data-placeholders='["Try &ldquo;family SUV under 60k&rdquo;","Describe your range needs&hellip;","e.g. &ldquo;Tesla Model 3 alternative&rdquo;","e.g. &ldquo;7 seats, fast charging&rdquo;"]'
+        class="search-input"
+        aria-label="Search electric vehicles"
+        aria-describedby="search-feedback"
+        autocapitalize="off"
+        autocorrect="off"
+        spellcheck="false"
+        enterkeyhint="search"
+        data-lpignore="true"
+      />
+      <span class="search-placeholder-visual" aria-hidden="true">Try &ldquo;family SUV under 60k&rdquo;</span>
+    </div>
 
     <div class="search-actions">
-      <kbd class="search-kbd-hint" aria-hidden="true" title="Press / to focus search">/</kbd>
-
       <button
         type="button"
         id="search-clear"
