@@ -1,4 +1,5 @@
-// Search bar behavior: clear button, feedback, focus "/" shortcut, defensive states
+// Search bar behavior: clear action, feedback states, "/" focus, Escape
+// Visibility of clear + kbd is pure CSS (:placeholder-shown / :focus-within).
 (() => {
     function initSearchForm(form) {
         const input = form.querySelector('.search-input');
@@ -6,7 +7,7 @@
         const submit = form.querySelector('.search-submit');
         const feedback = form.querySelector('#search-feedback');
 
-        if (!input || !submit || !feedback) return;
+        if (!input || !submit) return;
 
         const setBusy = (busy) => {
             form.setAttribute('aria-busy', String(busy));
@@ -14,23 +15,18 @@
         };
 
         const showFeedback = (msg, state = '') => {
+            if (!feedback) return;
             feedback.hidden = !msg;
             feedback.textContent = msg || '';
             if (state) feedback.dataset.state = state;
             else feedback.removeAttribute('data-state');
         };
 
-        const updateClear = () => {
-            if (!clearBtn) return;
-            clearBtn.hidden = input.value.trim().length === 0;
-        };
-
         input.addEventListener('input', () => {
-            updateClear();
             const q = input.value.trim();
+            form.removeAttribute('data-invalid');
             if (q.length > 2) {
                 showFeedback(`Press Enter to search for “${q}”`, 'ready');
-                form.removeAttribute('data-invalid');
             } else {
                 showFeedback('');
             }
@@ -38,13 +34,12 @@
 
         clearBtn?.addEventListener('click', () => {
             input.value = '';
+            input.dispatchEvent(new Event('input', { bubbles: true }));
             input.focus();
-            updateClear();
             showFeedback('');
             form.removeAttribute('data-invalid');
         });
 
-        // Form submit validation + polish
         form.addEventListener('submit', (e) => {
             const q = input.value.trim();
             if (!q) {
@@ -56,18 +51,14 @@
             }
             setBusy(true);
             showFeedback('Searching…', 'loading');
-            // SSR navigation will occur; this is just a11y polish pre-nav.
         });
 
-        // init state
-        updateClear();
         setBusy(false);
     }
 
-    // Bind every search component on the page (robust if multiple forms exist)
     document.querySelectorAll('form.search-component').forEach(initSearchForm);
 
-    // "/" to focus the first search input (don’t hijack when typing in inputs/areas)
+    // "/" focuses the first search input; Escape clears or blurs
     document.addEventListener('keydown', (e) => {
         const active = document.activeElement;
         const inField = active &&
@@ -82,12 +73,12 @@
             }
         } else if (e.key === 'Escape' && active?.classList.contains('search-input')) {
             const form = active.closest('form.search-component');
-            const clearBtn = form?.querySelector('#search-clear');
             if (active.value) {
                 active.value = '';
-                clearBtn && (clearBtn.hidden = true);
+                active.dispatchEvent(new Event('input', { bubbles: true }));
                 const feedback = form?.querySelector('#search-feedback');
                 if (feedback) { feedback.hidden = true; feedback.textContent = ''; feedback.removeAttribute('data-state'); }
+                form?.removeAttribute('data-invalid');
             } else {
                 active.blur();
             }
