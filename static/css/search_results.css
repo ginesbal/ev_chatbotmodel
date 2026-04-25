@@ -318,11 +318,12 @@ nav[aria-label="Pagination"] {
     box-shadow 220ms var(--ease-out-emil);
 }
 
-/* Focus signal: a soft depth lift, nothing else. No underline, no
-   border-color shift, no transparent sides — those all read as lines
-   appearing/disappearing inside the wrap, which conflicts with the
-   intent of a clean, line-free focused state. */
-.search-field:focus-within {
+/* Active state (focused OR typed): hide the field's 1px border entirely
+   and lift the shadow. The shadow alone defines the field — no border
+   lines remain anywhere on the bar while the user is interacting. */
+.search-field:focus-within,
+.search-component:has(.search-input:not(:placeholder-shown)) .search-field {
+  border-color: transparent;
   box-shadow: var(--shadow-md);
 }
 
