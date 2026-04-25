@@ -658,15 +658,6 @@ nav[aria-label="Pagination"] {
   box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.12);
 }
 
-/* Subtle placeholder crossfade for rotating hints */
-.search-input::placeholder {
-  transition: opacity 250ms var(--ease-out-emil);
-}
-
-.search-input[data-ph-fading]::placeholder {
-  opacity: 0;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .search-suggestion,
   .search-suggestion-dot {

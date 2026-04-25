@@ -507,15 +507,18 @@
     color: var(--primary-500) !important;
 }
 
-/* ---------- FORMS & INPUTS ---------- */
-input:focus,
+/* ---------- FORMS & INPUTS ----------
+   Global focus styling for form fields. The search bar (.search-input)
+   handles its own focus signal via the parent .search-field — exclude it
+   here so the global ring doesn't compete with the open-frame underline. */
+input:focus:not(.search-input),
 select:focus,
 textarea:focus {
     position: relative;
     z-index: var(--z-float);
 }
 
-input:focus-visible,
+input:focus-visible:not(.search-input),
 select:focus-visible,
 textarea:focus-visible {
     outline: none;
