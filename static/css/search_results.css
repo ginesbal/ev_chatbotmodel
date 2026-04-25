@@ -318,33 +318,12 @@ nav[aria-label="Pagination"] {
     box-shadow 220ms var(--ease-out-emil);
 }
 
-/* Single focus signature: side + bottom borders fade out and a 2px
-   underline grows from the left to take the bottom's place. Reads as one
-   coherent move — the frame opens to reveal the active line. No outer
-   ring, no border-color shift, no per-icon color shifts on focus. */
-.search-field::after {
-  content: "";
-  position: absolute;
-  left: 0.875rem;
-  right: 0.875rem;
-  bottom: -1px;
-  height: 2px;
-  background: var(--primary-500);
-  border-radius: 2px;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 240ms var(--ease-out-emil);
-  pointer-events: none;
-}
-
+/* Focus signal: a soft depth lift, nothing else. No underline, no
+   border-color shift, no transparent sides — those all read as lines
+   appearing/disappearing inside the wrap, which conflicts with the
+   intent of a clean, line-free focused state. */
 .search-field:focus-within {
-  border-left-color: transparent;
-  border-right-color: transparent;
-  border-bottom-color: transparent;
-}
-
-.search-field:focus-within::after {
-  transform: scaleX(1);
+  box-shadow: var(--shadow-md);
 }
 
 /* Prefix and submit share one rest treatment so they read as a matched
@@ -365,6 +344,17 @@ nav[aria-label="Pagination"] {
   min-width: 0;
   display: flex;
   align-items: center;
+}
+
+/* Defensive: the wrap is a non-focusable div, but if any global rule
+   tries to give it a focus outline / shadow / border, suppress it.
+   The field's parent owns the focus signal. */
+.search-input-wrap:focus,
+.search-input-wrap:focus-visible,
+.search-input-wrap:focus-within {
+  outline: none;
+  box-shadow: none;
+  border: none;
 }
 
 .search-input {
