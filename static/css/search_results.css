@@ -295,370 +295,106 @@ nav[aria-label="Pagination"] {
 }
 
 /* ============================================================
-   Search Component
-   Left-anchored glyph, single focus underline that grows from the
-   left, always-visible submit that fills once the input has content.
+   Search Component — minimal monochrome rebuild
+   One row: icon · input · vertical hairline · submit text
+   One state change: border darkens on focus. No JS, no overlays,
+   no rotating placeholder, no suggestion chips, no --primary-*.
    ============================================================ */
 .search-component {
   width: 100%;
+  max-width: 600px;
 }
 
 .search-field {
-  position: relative;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
+  display: flex;
+  align-items: stretch;
   width: 100%;
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
-  box-shadow: var(--shadow-sm);
-  transition:
-    border-color 220ms var(--ease-out-emil),
-    box-shadow 220ms var(--ease-out-emil);
+  border-radius: 0.625rem;
+  overflow: hidden;
+  transition: border-color 180ms var(--ease-out-emil, ease-out);
 }
 
-/* Active state (focused OR typed): hide the field's 1px border entirely
-   and lift the shadow. The shadow alone defines the field — no border
-   lines remain anywhere on the bar while the user is interacting. */
-.search-field:focus-within,
-.search-component:has(.search-input:not(:placeholder-shown)) .search-field {
-  border-color: transparent;
-  box-shadow: var(--shadow-md);
+.search-field:focus-within {
+  border-color: #111827;
 }
 
-/* Prefix and submit share one rest treatment so they read as a matched
-   pair flanking the input — the field's most cohesive cue. */
-.search-prefix {
+.search-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  padding-left: 0.875rem;
-  color: var(--muted, #6b7280);
+  padding: 0 0.625rem 0 0.875rem;
+  color: #6b7280;
   pointer-events: none;
-}
-
-.search-input-wrap {
-  position: relative;
-  grid-column: 2;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-}
-
-/* Defensive: the wrap is a non-focusable div, but if any global rule
-   tries to give it a focus outline / shadow / border, suppress it.
-   The field's parent owns the focus signal. */
-.search-input-wrap:focus,
-.search-input-wrap:focus-visible,
-.search-input-wrap:focus-within {
-  outline: none;
-  box-shadow: none;
-  border: none;
+  flex-shrink: 0;
 }
 
 .search-input {
-  width: 100%;
+  flex: 1;
   min-width: 0;
   padding: 0.875rem 0.5rem;
   font: inherit;
   font-size: 1rem;
   line-height: 1.4;
-  color: var(--text, #111827);
+  color: #111827;
   background: transparent;
   border: none;
   outline: none;
   appearance: none;
-  position: relative;
-  z-index: 1;
 }
 
-/* Native placeholder remains as no-JS fallback. When JS enhances the form,
-   .search-component gets [data-js-ready] and the native placeholder is
-   replaced by an animated overlay span. */
 .search-input::placeholder {
-  color: var(--muted, #9ca3af);
-}
-
-.search-component[data-js-ready] .search-input::placeholder {
-  color: transparent;
+  color: #9ca3af;
 }
 
 .search-input::-webkit-search-cancel-button,
-.search-input::-webkit-search-decoration {
+.search-input::-webkit-search-decoration,
+.search-input::-webkit-search-results-button,
+.search-input::-webkit-search-results-decoration {
   -webkit-appearance: none;
   appearance: none;
-}
-
-/* Animated placeholder — slides up out, new text starts below, slides up in.
-   Free of overflow constraints so longer prompts never clip mid-slide. */
-.search-placeholder-visual {
-  position: absolute;
-  left: 0.5rem;
-  top: 50%;
   display: none;
-  font-size: 1rem;
-  line-height: 1;
-  color: var(--muted, #9ca3af);
-  pointer-events: none;
-  white-space: nowrap;
-  transform: translateY(-50%);
-  transition:
-    opacity 260ms var(--ease-out-emil),
-    transform 260ms var(--ease-out-emil);
 }
 
-.search-component[data-js-ready] .search-placeholder-visual {
-  display: inline-block;
-}
-
-.search-component[data-has-focus] .search-placeholder-visual,
-.search-component:has(.search-input:not(:placeholder-shown)) .search-placeholder-visual {
-  opacity: 0;
-}
-
-.search-placeholder-visual[data-ph-anim="out"] {
-  opacity: 0;
-  transform: translateY(calc(-50% - 10px));
-}
-
-.search-placeholder-visual[data-ph-anim="in"] {
-  opacity: 0;
-  transform: translateY(calc(-50% + 10px));
-  transition: none;
-}
-
-.search-actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding-right: 0.5rem;
-}
-
-/* Clear button — visible only when input has content */
-.search-clear {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  padding: 0;
-  color: var(--muted, #6b7280);
-  background: transparent;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  opacity: 0;
-  transform: scale(0.85);
-  pointer-events: none;
-  transition:
-    opacity 150ms var(--ease-out-emil),
-    transform 150ms var(--ease-out-emil),
-    background-color 150ms var(--ease-out-emil),
-    color 150ms var(--ease-out-emil);
-}
-
-.search-component:has(.search-input:not(:placeholder-shown)) .search-clear {
-  opacity: 1;
-  transform: scale(1);
-  pointer-events: auto;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .search-clear:hover {
-    color: var(--text, #111827);
-    background: #f3f4f6;
-  }
-}
-
-.search-clear:active {
-  transform: scale(var(--press-scale));
-}
-
-/* Submit button — borderless icon at rest, mirrors the prefix so the two
-   read as matched bookends. Fills dark only when the input has content;
-   that fill is the single "ready" signal in the whole bar. */
 .search-submit {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-  color: var(--muted, #6b7280);
+  gap: 0.375rem;
+  padding: 0 1rem;
+  color: #111827;
   background: transparent;
   border: none;
-  border-radius: 0.5rem;
+  border-left: 1px solid #e5e7eb;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   cursor: pointer;
-  transition:
-    color 180ms var(--ease-out-emil),
-    background-color 180ms var(--ease-out-emil),
-    transform var(--duration-press) var(--ease-out-emil);
+  flex-shrink: 0;
+  transition: background-color 160ms var(--ease-out-emil, ease-out), transform var(--duration-press, 140ms) var(--ease-out-emil, ease-out);
 }
 
 .search-submit svg {
-  transition: transform 180ms var(--ease-out-emil);
-}
-
-.search-component:has(.search-input:not(:placeholder-shown)) .search-submit {
-  color: #ffffff;
-  background: #111827;
+  flex-shrink: 0;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .search-submit:hover {
-    color: var(--text, #111827);
-  }
-
-  .search-submit:hover svg {
-    transform: translateX(2px);
-  }
-
-  .search-component:has(.search-input:not(:placeholder-shown)) .search-submit:hover {
-    color: #ffffff;
-    background: #000000;
+    background: #f9fafb;
   }
 }
 
 .search-submit:active {
-  transform: scale(var(--press-scale));
+  transform: scale(var(--press-scale, 0.97));
 }
 
-.search-submit:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Invalid shake — data-invalid is set by searchbar.js on empty submit */
-.search-component[data-invalid="true"] .search-field {
-  animation: searchShake 260ms var(--ease-out-emil);
-  border-color: #dc2626;
-}
-
-@keyframes searchShake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-}
-
-.search-feedback {
-  margin-top: 0.5rem;
-  padding-left: 0.25rem;
-  font-size: 0.8125rem;
-  line-height: 1.3;
-  color: var(--muted, #6b7280);
-}
-
-.search-feedback[data-state="ready"] {
-  color: var(--text, #111827);
-}
-
-.search-feedback[data-state="error"] {
-  color: #dc2626;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .search-field,
-  .search-field::after,
-  .search-prefix,
-  .search-clear,
-  .search-submit,
-  .search-submit svg,
-  .search-placeholder-visual,
-  .search-input::placeholder {
-    transition: none;
+@media (max-width: 480px) {
+  .search-submit-label {
+    display: none;
   }
-  .search-component[data-invalid="true"] .search-field {
-    animation: none;
-  }
-}
-
-/* ------------------------------------------------------------
-   Search suggestions — live inside the search component, not as
-   a separate nav. Gives the whole block a single EV-centric identity.
-   ------------------------------------------------------------ */
-.search-suggestions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.375rem;
-  margin-top: 0.625rem;
-  padding-left: 0.125rem;
-}
-
-.search-suggestions-label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #9ca3af;
-  margin-right: 0.125rem;
-  user-select: none;
-}
-
-.search-suggestion {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4375rem;
-  padding: 0.3125rem 0.6875rem 0.3125rem 0.5rem;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  line-height: 1;
-  color: var(--muted, #6b7280);
-  background: transparent;
-  border: 1px solid #e5e7eb;
-  border-radius: 999px;
-  text-decoration: none;
-  transition:
-    color 160ms var(--ease-out-emil),
-    border-color 160ms var(--ease-out-emil),
-    background-color 160ms var(--ease-out-emil),
-    transform var(--duration-press) var(--ease-out-emil);
-}
-
-.search-suggestion-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: #d1d5db;
-  flex-shrink: 0;
-  transition: background-color 160ms var(--ease-out-emil), transform 160ms var(--ease-out-emil);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .search-suggestion:hover {
-    color: var(--text, #111827);
-    border-color: #111827;
-    background: #f3f4f6;
-  }
-
-  .search-suggestion:hover .search-suggestion-dot {
-    background: #111827;
-    transform: scale(1.2);
-  }
-}
-
-.search-suggestion:active {
-  transform: scale(var(--press-scale));
-}
-
-.search-suggestion:focus-visible {
-  outline: none;
-  border-color: #111827;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .search-suggestion,
-  .search-suggestion-dot {
-    transition: none;
-  }
-}
-
-@media (max-width: 520px) {
-  .search-suggestions-label {
-    flex-basis: 100%;
-    margin-bottom: 0.125rem;
+  .search-submit {
+    padding: 0 0.875rem;
   }
 }
