@@ -314,51 +314,49 @@ nav[aria-label="Pagination"] {
   border-radius: 0.75rem;
   box-shadow: var(--shadow-sm);
   transition:
-    border-color 180ms var(--ease-out-emil),
-    box-shadow 180ms var(--ease-out-emil);
+    border-color 220ms var(--ease-out-emil),
+    box-shadow 220ms var(--ease-out-emil);
 }
 
-/* Distinctive focus signature — a single quiet underline that grows
-   from the left. No outer ring, no prefix/submit color shift: those
-   were competing signals that made the focus state feel noisy. */
+/* Single focus signature: side + bottom borders fade out and a 2px
+   underline grows from the left to take the bottom's place. Reads as one
+   coherent move — the frame opens to reveal the active line. No outer
+   ring, no border-color shift, no per-icon color shifts on focus. */
 .search-field::after {
   content: "";
   position: absolute;
   left: 0.875rem;
   right: 0.875rem;
-  bottom: 0;
+  bottom: -1px;
   height: 2px;
   background: var(--primary-500);
   border-radius: 2px;
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 220ms var(--ease-out-emil);
+  transition: transform 240ms var(--ease-out-emil);
   pointer-events: none;
 }
 
 .search-field:focus-within {
-  border-color: var(--primary-500);
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
 }
 
 .search-field:focus-within::after {
   transform: scaleX(1);
 }
 
+/* Prefix and submit share one rest treatment so they read as a matched
+   pair flanking the input — the field's most cohesive cue. */
 .search-prefix {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2.5rem;
   padding-left: 0.875rem;
-  color: #6b7280;
-  transition: color 180ms var(--ease-out-emil);
+  color: var(--muted, #6b7280);
   pointer-events: none;
-}
-
-/* Prefix brightens once the user has typed something — feedback that the
-   query is registered, kept separate from the focus state. */
-.search-component:has(.search-input:not(:placeholder-shown)) .search-prefix {
-  color: var(--primary-500);
 }
 
 .search-input-wrap {
@@ -386,10 +384,10 @@ nav[aria-label="Pagination"] {
 }
 
 /* Native placeholder remains as no-JS fallback. When JS enhances the form,
-   .search-component gets [data-js-ready] and we hide the native placeholder
-   in favor of an animated overlay span. */
+   .search-component gets [data-js-ready] and the native placeholder is
+   replaced by an animated overlay span. */
 .search-input::placeholder {
-  color: #9ca3af;
+  color: var(--muted, #9ca3af);
 }
 
 .search-component[data-js-ready] .search-input::placeholder {
@@ -402,7 +400,8 @@ nav[aria-label="Pagination"] {
   appearance: none;
 }
 
-/* Animated placeholder — slides up out, new text starts below, slides up in */
+/* Animated placeholder — slides up out, new text starts below, slides up in.
+   Free of overflow constraints so longer prompts never clip mid-slide. */
 .search-placeholder-visual {
   position: absolute;
   left: 0.5rem;
@@ -410,30 +409,24 @@ nav[aria-label="Pagination"] {
   display: none;
   font-size: 1rem;
   line-height: 1;
-  color: #9ca3af;
+  color: var(--muted, #9ca3af);
   pointer-events: none;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: calc(100% - 0.5rem);
   transform: translateY(-50%);
   transition:
-    opacity 240ms var(--ease-out-emil),
-    transform 240ms var(--ease-out-emil);
+    opacity 260ms var(--ease-out-emil),
+    transform 260ms var(--ease-out-emil);
 }
 
 .search-component[data-js-ready] .search-placeholder-visual {
   display: inline-block;
 }
 
-/* Fade the span out when the input has focus or content — native focus ring
-   is off, the border + underline carry the signal instead. */
 .search-component[data-has-focus] .search-placeholder-visual,
 .search-component:has(.search-input:not(:placeholder-shown)) .search-placeholder-visual {
   opacity: 0;
 }
 
-/* Slide states, set by JS one frame at a time */
 .search-placeholder-visual[data-ph-anim="out"] {
   opacity: 0;
   transform: translateY(calc(-50% - 10px));
@@ -449,7 +442,7 @@ nav[aria-label="Pagination"] {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  padding-right: 0.375rem;
+  padding-right: 0.5rem;
 }
 
 /* Clear button — visible only when input has content */
@@ -460,7 +453,7 @@ nav[aria-label="Pagination"] {
   width: 1.75rem;
   height: 1.75rem;
   padding: 0;
-  color: #6b7280;
+  color: var(--muted, #6b7280);
   background: transparent;
   border: none;
   border-radius: 0.375rem;
@@ -492,27 +485,24 @@ nav[aria-label="Pagination"] {
   transform: scale(var(--press-scale));
 }
 
-/* Submit button — visible by default, "lights up" when ready.
-   Rest state: dark icon on a quiet chip so it never blends with the field.
-   Ready state: filled --primary-500 pill with a white icon — unmistakable.
-   Keeps the two states visually distinct without resorting to the
-   template-library "always-filled blue button". */
+/* Submit button — borderless icon at rest, mirrors the prefix so the two
+   read as matched bookends. Fills with --primary-500 only when the input
+   has content; that fill is the single "ready" signal in the whole bar. */
 .search-submit {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2rem;
+  height: 2rem;
   padding: 0;
-  color: #1f2937;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
+  color: var(--muted, #6b7280);
+  background: transparent;
+  border: none;
   border-radius: 0.5rem;
   cursor: pointer;
   transition:
     color 180ms var(--ease-out-emil),
     background-color 180ms var(--ease-out-emil),
-    border-color 180ms var(--ease-out-emil),
     transform var(--duration-press) var(--ease-out-emil);
 }
 
@@ -523,14 +513,11 @@ nav[aria-label="Pagination"] {
 .search-component:has(.search-input:not(:placeholder-shown)) .search-submit {
   color: #ffffff;
   background: var(--primary-500);
-  border-color: var(--primary-500);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .search-submit:hover {
     color: var(--text, #111827);
-    background: #e5e7eb;
-    border-color: #d1d5db;
   }
 
   .search-submit:hover svg {
@@ -540,7 +527,6 @@ nav[aria-label="Pagination"] {
   .search-component:has(.search-input:not(:placeholder-shown)) .search-submit:hover {
     color: #ffffff;
     background: var(--primary-600);
-    border-color: var(--primary-600);
   }
 }
 
