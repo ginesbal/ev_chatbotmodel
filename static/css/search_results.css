@@ -477,8 +477,8 @@ nav[aria-label="Pagination"] {
 }
 
 /* Submit button — borderless icon at rest, mirrors the prefix so the two
-   read as matched bookends. Fills with --primary-500 only when the input
-   has content; that fill is the single "ready" signal in the whole bar. */
+   read as matched bookends. Fills dark only when the input has content;
+   that fill is the single "ready" signal in the whole bar. */
 .search-submit {
   display: inline-flex;
   align-items: center;
@@ -503,7 +503,7 @@ nav[aria-label="Pagination"] {
 
 .search-component:has(.search-input:not(:placeholder-shown)) .search-submit {
   color: #ffffff;
-  background: var(--primary-500);
+  background: #111827;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -517,7 +517,7 @@ nav[aria-label="Pagination"] {
 
   .search-component:has(.search-input:not(:placeholder-shown)) .search-submit:hover {
     color: #ffffff;
-    background: var(--primary-600);
+    background: #000000;
   }
 }
 
@@ -551,7 +551,7 @@ nav[aria-label="Pagination"] {
 }
 
 .search-feedback[data-state="ready"] {
-  color: var(--primary-500);
+  color: var(--text, #111827);
 }
 
 .search-feedback[data-state="error"] {
@@ -629,12 +629,12 @@ nav[aria-label="Pagination"] {
 @media (hover: hover) and (pointer: fine) {
   .search-suggestion:hover {
     color: var(--text, #111827);
-    border-color: var(--primary-500);
-    background: rgba(var(--color-primary-rgb), 0.04);
+    border-color: #111827;
+    background: #f3f4f6;
   }
 
   .search-suggestion:hover .search-suggestion-dot {
-    background: var(--primary-500);
+    background: #111827;
     transform: scale(1.2);
   }
 }
@@ -645,8 +645,8 @@ nav[aria-label="Pagination"] {
 
 .search-suggestion:focus-visible {
   outline: none;
-  border-color: var(--primary-500);
-  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.12);
+  border-color: #111827;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
 }
 
 @media (prefers-reduced-motion: reduce) {
