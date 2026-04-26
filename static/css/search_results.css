@@ -332,11 +332,11 @@ nav[aria-label="Pagination"] {
   align-items: center;
   gap: 0.75rem;
   width: 100%;
-  padding: 0 0.125rem 0.6875rem;
+  padding: 0.25rem 0.125rem;
   background: transparent;
-  border: none;
-  border-bottom: 2px solid #e5e7eb;
+  border: 0;
   border-radius: 0;
+  box-shadow: none;
 }
 
 .search-icon {
@@ -359,10 +359,21 @@ nav[aria-label="Pagination"] {
   line-height: 1.4;
   color: #111827;
   background: transparent;
-  border: none;
-  outline: none;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
   appearance: none;
+  -webkit-appearance: none;
   letter-spacing: -0.005em;
+}
+
+.search-input:focus,
+.search-input:focus-visible,
+.search-input:hover,
+.search-input:active {
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
 }
 
 .search-input::placeholder {
