@@ -369,6 +369,10 @@ nav[aria-label="Pagination"] {
   }
 }
 
+.search-field:focus-within .search-icon {
+  color: var(--primary-500);
+}
+
 .search-input {
   flex: 1;
   min-width: 0;
@@ -384,6 +388,12 @@ nav[aria-label="Pagination"] {
   appearance: none;
   -webkit-appearance: none;
   letter-spacing: -0.005em;
+  caret-color: var(--primary-500);
+}
+
+.search-input::selection {
+  background: var(--primary-500);
+  color: #ffffff;
 }
 
 .search-input:focus,
