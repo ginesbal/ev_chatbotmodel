@@ -16,17 +16,6 @@
   margin: 0 auto;
 }
 
-/* Eyebrow above the heading — small uppercase tag instead of an
-   accent-colored span on the title itself. Quiet, monochrome. */
-.search-results-eyebrow {
-  margin: 0 0 0.625rem 0;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #6b7280;
-}
-
 .search-results-title {
   font-family: var(--font-sans);
   font-size: 1.625rem;
@@ -36,6 +25,9 @@
   letter-spacing: -0.02em;
   line-height: 1.15;
   text-wrap: balance;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: heroRise 320ms var(--ease-out-emil, ease-out) 0ms forwards;
 }
 
 .search-results-title-accent {
@@ -60,6 +52,25 @@
 .search-results-searchbar {
   margin-bottom: 0.5rem;
   max-width: 720px;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: heroRise 320ms var(--ease-out-emil, ease-out) 60ms forwards;
+}
+
+@keyframes heroRise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-results-title,
+  .search-results-searchbar {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
 }
 
 @media (max-width: 640px) {
@@ -337,6 +348,7 @@ nav[aria-label="Pagination"] {
   border: 0;
   border-radius: 0;
   box-shadow: none;
+  cursor: text;
 }
 
 .search-icon {
@@ -345,9 +357,16 @@ nav[aria-label="Pagination"] {
   justify-content: center;
   width: 1.25rem;
   height: 1.25rem;
-  color: #6b7280;
+  color: #9ca3af;
   pointer-events: none;
   flex-shrink: 0;
+  transition: color 200ms var(--ease-out-emil, ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .search-field:hover .search-icon {
+    color: #111827;
+  }
 }
 
 .search-input {
