@@ -20,19 +20,23 @@
       </svg>
     </span>
 
-    <input
-      id="search_query"
-      name="search_query"
-      type="search"
-      placeholder="Search electric vehicles"
-      class="search-input"
-      aria-label="Search electric vehicles"
-      autocapitalize="off"
-      autocorrect="off"
-      spellcheck="false"
-      enterkeyhint="search"
-      data-lpignore="true"
-    />
+    <div class="search-input-wrap">
+      <input
+        id="search_query"
+        name="search_query"
+        type="search"
+        placeholder="Try &ldquo;family SUV under 60k&rdquo;"
+        data-placeholders='["Try &ldquo;family SUV under 60k&rdquo;","Describe what you need&hellip;","Tesla Model 3 alternative","7 seats, fast charging"]'
+        class="search-input"
+        aria-label="Search electric vehicles"
+        autocapitalize="off"
+        autocorrect="off"
+        spellcheck="false"
+        enterkeyhint="search"
+        data-lpignore="true"
+      />
+      <span class="search-placeholder-visual" aria-hidden="true">Try &ldquo;family SUV under 60k&rdquo;</span>
+    </div>
 
     <button type="submit" class="search-submit" aria-label="Submit search">
       <span class="search-submit-label">Search</span>

@@ -374,8 +374,16 @@ nav[aria-label="Pagination"] {
   color: var(--primary-500);
 }
 
-.search-input {
+.search-input-wrap {
+  position: relative;
   flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
   min-width: 0;
   padding: 0.5rem 0;
   font: inherit;
@@ -390,6 +398,61 @@ nav[aria-label="Pagination"] {
   -webkit-appearance: none;
   letter-spacing: -0.005em;
   caret-color: var(--primary-500);
+  position: relative;
+  z-index: 1;
+}
+
+/* Native placeholder remains as no-JS fallback. When JS enhances the
+   form, [data-js-ready] hides it in favor of the animated overlay span. */
+.search-component[data-js-ready] .search-input::placeholder {
+  color: transparent;
+}
+
+/* Vertical-scroll placeholder rotation. The span is absolutely positioned
+   over the input's text area; JS toggles data-ph-anim to roll the text up
+   out of view, snap the next line below, then release back to baseline. */
+.search-placeholder-visual {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  display: none;
+  font: inherit;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  color: #9ca3af;
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: -0.005em;
+  transform: translateY(-50%);
+  transition:
+    opacity 280ms var(--ease-out-emil, ease-out),
+    transform 280ms var(--ease-out-emil, ease-out);
+}
+
+.search-component[data-js-ready] .search-placeholder-visual {
+  display: inline-block;
+}
+
+.search-component[data-has-focus] .search-placeholder-visual,
+.search-component:has(.search-input:not(:placeholder-shown)) .search-placeholder-visual {
+  opacity: 0;
+}
+
+.search-placeholder-visual[data-ph-anim="out"] {
+  opacity: 0;
+  transform: translateY(calc(-50% - 100%));
+}
+
+.search-placeholder-visual[data-ph-anim="in"] {
+  opacity: 0;
+  transform: translateY(calc(-50% + 100%));
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-placeholder-visual {
+    transition: none;
+  }
 }
 
 .search-input::selection {
